@@ -5,213 +5,211 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
   <meta name="mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
-  <meta name="apple-mobile-web-app-status-bar-style" content="default" />
   <title>My Korean Skincare</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400;1,500&family=Nunito:wght@300;400;500;600&display=swap" rel="stylesheet" />
-
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Nunito:wght@300;400;500;600&display=swap" rel="stylesheet" />
   <style>
-    /* ═══════════════════════════════════════════════════════
-       DESIGN TOKENS — Aesu brand palette
-       ═══════════════════════════════════════════════════════ */
     :root {
-      /* Pearl whites & soft tints */
-      --pure-pearl:      #FDFCFA;
-      --warm-white:      #F8F4EF;
-      --ivory-mist:      #F4EDE6;
-      --porcelain:       #EFE8E0;
-      --cream-silk:      #EAE0D8;
-
-      /* Backgrounds & neutrals */
-      --warm-linen:      #F5EFE8;
-      --soft-blush-beige:#EDE6DF;
-      --dusty-rose-white:#E8DDD4;
-      --greige-mist:     #DED6CE;
-      --pebble-sand:     #D4CBC2;
-
-      /* Terracotta & spice accents */
-      --true-terracotta: #C45C3A;
-      --deep-clay:       #A64830;
-      --spiced-amber:    #D4825A;
-      --warm-sand:       #E8AA88;
-      --dune-blush:      #F0CDB0;
-
-      /* Product & accent tones */
-      --warm-caramel:    #C4A882;
-      --honey-amber:     #B89A7A;
-      --apricot-nude:    #D4B8A0;
-      --peach-blush:     #E8C4B0;
-      --soft-coral-mist: #F0D0B8;
-
-      /* Typography & dark tones */
-      --espresso-black:  #3A3530;
-      --dark-mocha:      #6B5E52;
-      --warm-taupe:      #8A7A6E;
-      --stone-grey:      #B8A898;
-      --silver-sand:     #D4C8BC;
+      --pearl:#FDFCFA; --warm-white:#F8F4EF; --ivory:#F4EDE6; --porcelain:#EFE8E0;
+      --cream:#EAE0D8; --linen:#F5EFE8; --blush:#EDE6DF; --dusty:#E8DDD4;
+      --greige:#DED6CE; --pebble:#D4CBC2;
+      --terra:#C45C3A; --clay:#A64830; --amber:#D4825A; --sand:#E8AA88; --dune:#F0CDB0;
+      --caramel:#C4A882; --honey:#B89A7A; --apricot:#D4B8A0; --peach:#E8C4B0;
+      --espresso:#3A3530; --mocha:#6B5E52; --taupe:#8A7A6E; --stone:#B8A898; --silver:#D4C8BC;
     }
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    html{-webkit-text-size-adjust:none}
+    body{background:var(--linen);overflow-x:hidden}
+    input[type=file]{display:none}
 
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    html { -webkit-text-size-adjust: none; }
-    body { background: var(--warm-linen); overflow-x: hidden; }
-    input[type=file] { display: none; }
+    .sk-init{display:flex;flex-direction:column;align-items:center;justify-content:center;height:100dvh;gap:16px;background:var(--linen)}
+    .sk-init-logo{font-family:'Cormorant Garamond',serif;font-size:11px;letter-spacing:.22em;text-transform:uppercase;color:var(--terra)}
+    .sk-init-title{font-family:'Cormorant Garamond',serif;font-size:24px;font-weight:500;color:var(--espresso)}
+    .sk-init-sub{font-size:11px;color:var(--taupe);letter-spacing:.12em;text-transform:uppercase}
+    .sk-spin-sm{width:28px;height:28px;border:2px solid var(--cream);border-top-color:var(--terra);border-radius:50%;animation:rot .75s linear infinite}
+    @keyframes rot{to{transform:rotate(360deg)}}
 
-    /* ── Loading screen ───────────────────────────────────── */
-    .sk-init         { display:flex;flex-direction:column;align-items:center;justify-content:center;height:100dvh;gap:18px;background:var(--warm-linen); }
-    .sk-init-logo    { font-family:'Cormorant Garamond',Georgia,serif;font-size:11px;letter-spacing:.25em;text-transform:uppercase;color:var(--true-terracotta);margin-bottom:4px; }
-    .sk-init-title   { font-family:'Cormorant Garamond',Georgia,serif;font-size:24px;font-weight:500;color:var(--espresso-black);letter-spacing:.02em; }
-    .sk-init-sub     { font-size:11px;color:var(--warm-taupe);letter-spacing:.12em;text-transform:uppercase; }
-    .sk-spin-sm      { width:28px;height:28px;border:2px solid var(--cream-silk);border-top-color:var(--true-terracotta);border-radius:50%;animation:sk-rot .75s linear infinite; }
-    @keyframes sk-rot { to { transform:rotate(360deg); } }
+    .sk-app{font-family:'Nunito',sans-serif;background:var(--linen);height:100dvh;display:flex;flex-direction:column;max-width:480px;margin:0 auto;color:var(--espresso);overflow:hidden}
+    .sk-header{background:var(--pearl);padding:20px 22px 0;border-bottom:1px solid var(--cream);flex-shrink:0}
+    .sk-eyebrow{font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:var(--terra);font-weight:600;margin-bottom:4px}
+    .sk-title{font-family:'Cormorant Garamond',serif;font-size:23px;font-weight:500;letter-spacing:.02em;line-height:1.1}
+    .sk-tabs{display:flex;margin-top:16px}
+    .sk-tab{flex:1;padding:10px 4px;border:none;background:none;font-family:'Nunito',sans-serif;font-size:10px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--stone);cursor:pointer;border-bottom:2px solid transparent;transition:all .2s}
+    .sk-tab.on{color:var(--terra);border-bottom-color:var(--terra)}
+    .sk-content{flex:1;overflow-y:auto;padding:20px 20px 52px;scrollbar-width:none}
+    .sk-content::-webkit-scrollbar{display:none}
 
-    /* ── App shell ─────────────────────────────────────────── */
-    .sk-app          { font-family:'Nunito',system-ui,sans-serif;background:var(--warm-linen);height:100dvh;display:flex;flex-direction:column;max-width:480px;margin:0 auto;color:var(--espresso-black);overflow:hidden; }
-    .sk-header       { background:var(--pure-pearl);padding:22px 22px 0;border-bottom:1px solid var(--cream-silk);flex-shrink:0; }
-    .sk-eyebrow      { font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:var(--true-terracotta);font-weight:600;margin-bottom:5px; }
-    .sk-title        { font-family:'Cormorant Garamond',Georgia,serif;font-size:24px;font-weight:500;letter-spacing:.02em;line-height:1.1;color:var(--espresso-black); }
-    .sk-tabs         { display:flex;margin-top:18px; }
-    .sk-tab          { flex:1;padding:10px 6px;border:none;background:none;font-family:'Nunito',sans-serif;font-size:10.5px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--stone-grey);cursor:pointer;border-bottom:2px solid transparent;transition:all .2s; }
-    .sk-tab.on       { color:var(--true-terracotta);border-bottom-color:var(--true-terracotta); }
-    .sk-content      { flex:1;overflow-y:auto;padding:22px 22px 52px;scrollbar-width:none; }
-    .sk-content::-webkit-scrollbar { display:none; }
-    .sk-chat-wrap    { flex:1;display:flex;flex-direction:column;overflow:hidden; }
+    .row{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px}
+    .sec-title{font-family:'Cormorant Garamond',serif;font-size:21px;font-weight:500}
 
-    /* ── Layout helpers ────────────────────────────────────── */
-    .row             { display:flex;align-items:center;justify-content:space-between;margin-bottom:20px; }
-    .sec-title       { font-family:'Cormorant Garamond',Georgia,serif;font-size:21px;font-weight:500;color:var(--espresso-black); }
+    .btn-primary{background:var(--terra);color:var(--pearl);border:none;padding:9px 20px;border-radius:24px;font-family:'Nunito',sans-serif;font-size:13px;font-weight:600;cursor:pointer;display:inline-flex;align-items:center;gap:6px;transition:background .2s,transform .15s}
+    .btn-primary:hover{background:var(--clay);transform:translateY(-1px)}
+    .btn-outline{background:none;color:var(--terra);border:1.5px solid var(--terra);padding:7px 15px;border-radius:22px;font-family:'Nunito',sans-serif;font-size:12px;font-weight:600;cursor:pointer;transition:all .2s}
+    .btn-outline:hover{background:var(--terra);color:var(--pearl)}
+    .btn-danger{color:var(--clay)!important;border-color:var(--clay)!important}
+    .btn-danger:hover{background:var(--clay)!important;color:var(--pearl)!important}
+    .btn-ghost{background:none;border:none;cursor:pointer;color:var(--pebble);font-size:18px;padding:4px;line-height:1;transition:color .2s}
+    .btn-ghost:hover{color:var(--terra)}
+    .back-btn{background:none;border:none;font-size:22px;cursor:pointer;color:var(--terra);padding:0;line-height:1;flex-shrink:0}
+    .add-circ{width:28px;height:28px;border-radius:50%;background:var(--terra);color:var(--pearl);border:none;font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:background .2s,transform .15s;line-height:1}
+    .add-circ:hover{background:var(--clay);transform:scale(1.1)}
 
-    /* ── Buttons ───────────────────────────────────────────── */
-    .btn-primary     { background:var(--true-terracotta);color:var(--pure-pearl);border:none;padding:9px 20px;border-radius:24px;font-family:'Nunito',sans-serif;font-size:13px;font-weight:600;cursor:pointer;display:inline-flex;align-items:center;gap:6px;transition:background .2s,transform .15s;letter-spacing:.01em; }
-    .btn-primary:hover  { background:var(--deep-clay);transform:translateY(-1px); }
-    .btn-primary:active { transform:translateY(0); }
-    .btn-outline     { background:none;color:var(--true-terracotta);border:1.5px solid var(--true-terracotta);padding:7px 16px;border-radius:22px;font-family:'Nunito',sans-serif;font-size:12px;font-weight:600;cursor:pointer;transition:all .2s;letter-spacing:.01em; }
-    .btn-outline:hover  { background:var(--true-terracotta);color:var(--pure-pearl); }
-    .btn-danger      { color:var(--deep-clay)!important;border-color:var(--deep-clay)!important; }
-    .btn-danger:hover   { background:var(--deep-clay)!important;color:var(--pure-pearl)!important; }
-    .btn-ghost       { background:none;border:none;cursor:pointer;color:var(--pebble-sand);font-size:18px;padding:4px;line-height:1;transition:color .2s; }
-    .btn-ghost:hover { color:var(--true-terracotta); }
-    .back-btn        { background:none;border:none;font-size:22px;cursor:pointer;color:var(--true-terracotta);padding:0;line-height:1;flex-shrink:0; }
+    .badge{display:inline-flex;align-items:center;gap:4px;padding:3px 10px;border-radius:20px;font-size:10.5px;font-weight:600;letter-spacing:.02em;white-space:nowrap}
 
-    /* ── Add circle on product card ────────────────────────── */
-    .add-circ        { width:28px;height:28px;border-radius:50%;background:var(--true-terracotta);color:var(--pure-pearl);border:none;font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:background .2s,transform .15s;line-height:1; }
-    .add-circ:hover  { background:var(--deep-clay);transform:scale(1.12); }
+    /* ── Filter chips ── */
+    .chips{display:flex;gap:8px;overflow-x:auto;padding-bottom:10px;scrollbar-width:none}
+    .chips::-webkit-scrollbar{display:none}
+    .chip{white-space:nowrap;padding:6px 14px;border-radius:22px;border:1.5px solid var(--silver);background:var(--pearl);font-size:12px;font-weight:500;color:var(--taupe);cursor:pointer;transition:all .2s;font-family:'Nunito',sans-serif;flex-shrink:0}
+    .chip.on{background:var(--espresso);border-color:var(--espresso);color:var(--pearl)}
 
-    /* ── Badges ────────────────────────────────────────────── */
-    .badge           { display:inline-flex;align-items:center;gap:4px;padding:3px 10px;border-radius:20px;font-size:10.5px;font-weight:600;letter-spacing:.03em;white-space:nowrap; }
+    /* ── Filter panel ── */
+    .filter-section{margin-bottom:14px}
+    .filter-label{font-size:10px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--stone);margin-bottom:8px;display:block}
+    .filter-wrap{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:4px}
+    .filter-chip{padding:5px 12px;border-radius:20px;border:1.5px solid var(--silver);background:var(--pearl);font-size:11.5px;font-weight:500;color:var(--taupe);cursor:pointer;transition:all .2s;font-family:'Nunito',sans-serif}
+    .filter-chip.on{background:var(--espresso);border-color:var(--espresso);color:var(--pearl)}
+    .filter-toggle{display:flex;align-items:center;gap:6px;background:none;border:none;cursor:pointer;font-family:'Nunito',sans-serif;font-size:12px;font-weight:600;color:var(--taupe);padding:0;margin-bottom:14px;transition:color .2s}
+    .filter-toggle:hover{color:var(--terra)}
+    .filter-divider{height:1px;background:var(--cream);margin-bottom:14px}
 
-    /* ── Filter chips ──────────────────────────────────────── */
-    .chips           { display:flex;gap:8px;overflow-x:auto;padding-bottom:12px;margin-bottom:16px;scrollbar-width:none; }
-    .chips::-webkit-scrollbar { display:none; }
-    .chip            { white-space:nowrap;padding:6px 15px;border-radius:22px;border:1.5px solid var(--silver-sand);background:var(--pure-pearl);font-size:12px;font-weight:500;color:var(--warm-taupe);cursor:pointer;transition:all .2s;font-family:'Nunito',sans-serif;flex-shrink:0; }
-    .chip.on         { background:var(--espresso-black);border-color:var(--espresso-black);color:var(--pure-pearl); }
+    /* ── Product grid ── */
+    .p-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+    .p-card{background:var(--pearl);border-radius:18px;overflow:hidden;border:1px solid var(--ivory);cursor:pointer;transition:transform .2s,box-shadow .2s}
+    .p-card:hover{transform:translateY(-3px);box-shadow:0 8px 24px rgba(58,53,48,.10)}
+    .p-photo{width:100%;aspect-ratio:1;overflow:hidden;background:linear-gradient(135deg,var(--ivory),var(--blush));display:flex;align-items:center;justify-content:center;font-size:40px}
+    .p-photo img{width:100%;height:100%;object-fit:cover}
+    .p-body{padding:10px 12px 12px}
+    .p-brand{font-size:10px;color:var(--terra);font-weight:600;letter-spacing:.08em;text-transform:uppercase;margin-bottom:3px}
+    .p-name{font-size:13px;font-weight:600;color:var(--espresso);margin-bottom:8px;line-height:1.35;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+    .p-foot{display:flex;align-items:center;justify-content:space-between;gap:4px}
 
-    /* ── Product grid ──────────────────────────────────────── */
-    .p-grid          { display:grid;grid-template-columns:1fr 1fr;gap:14px; }
-    .p-card          { background:var(--pure-pearl);border-radius:18px;overflow:hidden;border:1px solid var(--ivory-mist);cursor:pointer;transition:transform .2s,box-shadow .2s; }
-    .p-card:hover    { transform:translateY(-3px);box-shadow:0 8px 24px rgba(58,53,48,.10); }
-    .p-photo         { width:100%;aspect-ratio:1;overflow:hidden;background:linear-gradient(135deg,var(--ivory-mist),var(--soft-blush-beige));display:flex;align-items:center;justify-content:center;font-size:40px; }
-    .p-photo img     { width:100%;height:100%;object-fit:cover; }
-    .p-body          { padding:10px 13px 13px; }
-    .p-brand         { font-size:10px;color:var(--true-terracotta);font-weight:600;letter-spacing:.1em;text-transform:uppercase;margin-bottom:3px; }
-    .p-name          { font-size:13px;font-weight:600;color:var(--espresso-black);margin-bottom:9px;line-height:1.35;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden; }
-    .p-foot          { display:flex;align-items:center;justify-content:space-between;gap:4px; }
+    /* ── Empty states ── */
+    .empty{text-align:center;padding:52px 24px;color:var(--stone)}
+    .empty-ico{font-size:48px;margin-bottom:14px}
+    .empty-t{font-family:'Cormorant Garamond',serif;font-size:20px;font-style:italic;color:var(--taupe);margin-bottom:8px}
+    .empty-d{font-size:13px;line-height:1.7;color:var(--taupe)}
 
-    /* ── Empty states ──────────────────────────────────────── */
-    .empty           { text-align:center;padding:56px 24px;color:var(--stone-grey); }
-    .empty-ico       { font-size:48px;margin-bottom:16px; }
-    .empty-t         { font-family:'Cormorant Garamond',Georgia,serif;font-size:21px;font-style:italic;color:var(--warm-taupe);margin-bottom:10px;font-weight:400; }
-    .empty-d         { font-size:13px;line-height:1.7;color:var(--warm-taupe); }
+    /* ── Modals ── */
+    .overlay{position:fixed;inset:0;background:rgba(58,53,48,.52);display:flex;align-items:flex-end;z-index:200;backdrop-filter:blur(8px)}
+    .sheet{background:var(--pearl);border-radius:26px 26px 0 0;width:100%;max-height:92dvh;overflow-y:auto;animation:slideUp .28s ease;scrollbar-width:none;border-top:1px solid var(--ivory)}
+    .sheet::-webkit-scrollbar{display:none}
+    .handle{width:36px;height:4px;background:var(--cream);border-radius:2px;margin:14px auto 20px}
+    @keyframes slideUp{from{transform:translateY(100%)}to{transform:translateY(0)}}
+    .sheet-pad{padding:0 24px 36px}
+    .m-title{font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:500;margin-bottom:18px}
 
-    /* ── Modals / Bottom sheets ────────────────────────────── */
-    .overlay         { position:fixed;inset:0;background:rgba(58,53,48,.52);display:flex;align-items:flex-end;z-index:200;backdrop-filter:blur(8px); }
-    .sheet           { background:var(--pure-pearl);border-radius:26px 26px 0 0;width:100%;max-height:92dvh;overflow-y:auto;animation:slideUp .28s ease;scrollbar-width:none;border-top:1px solid var(--ivory-mist); }
-    .sheet::-webkit-scrollbar { display:none; }
-    .handle          { width:36px;height:4px;background:var(--cream-silk);border-radius:2px;margin:14px auto 22px; }
-    @keyframes slideUp { from{transform:translateY(100%)} to{transform:translateY(0)} }
-    .sheet-pad       { padding:0 24px 36px; }
-    .m-title         { font-family:'Cormorant Garamond',Georgia,serif;font-size:22px;font-weight:500;margin-bottom:20px;color:var(--espresso-black); }
+    /* ── Add product ── */
+    .add-opts{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:8px}
+    .add-opt{border:1.5px dashed var(--pebble);border-radius:18px;padding:26px 16px;display:flex;flex-direction:column;align-items:center;gap:10px;cursor:pointer;transition:all .2s;background:var(--linen)}
+    .add-opt:hover{border-color:var(--terra);background:var(--ivory)}
+    .add-opt-ico{font-size:30px}
+    .add-opt-lbl{font-size:13px;font-weight:600;color:var(--mocha);text-align:center}
 
-    /* ── Add product options ───────────────────────────────── */
-    .add-opts        { display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:8px; }
-    .add-opt         { border:1.5px dashed var(--pebble-sand);border-radius:18px;padding:28px 16px;display:flex;flex-direction:column;align-items:center;gap:10px;cursor:pointer;transition:all .2s;background:var(--warm-linen);font-family:'Nunito',sans-serif; }
-    .add-opt:hover   { border-color:var(--true-terracotta);background:var(--ivory-mist); }
-    .add-opt-ico     { font-size:32px; }
-    .add-opt-lbl     { font-size:13px;font-weight:600;color:var(--dark-mocha);text-align:center; }
+    /* ── Product detail ── */
+    .det-photo{width:100%;height:220px;overflow:hidden;background:linear-gradient(135deg,var(--ivory),var(--blush));display:flex;align-items:center;justify-content:center;font-size:68px;border-radius:26px 26px 0 0}
+    .det-photo img{width:100%;height:100%;object-fit:cover}
+    .det-brand{font-size:11px;color:var(--terra);letter-spacing:.1em;text-transform:uppercase;font-weight:600;margin-bottom:4px}
+    .det-name{font-family:'Cormorant Garamond',serif;font-size:24px;font-weight:500;margin-bottom:12px;line-height:1.2}
+    .sec-lbl{font-size:10px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--stone);margin:16px 0 6px;display:block}
+    .sec-txt{font-size:13px;line-height:1.65;color:var(--mocha)}
+    .tags{display:flex;flex-wrap:wrap;gap:6px}
+    .tag{padding:4px 12px;border-radius:16px;background:var(--ivory);color:var(--mocha);font-size:12px;font-weight:500}
+    .tag.green{background:#EDF5ED;color:#3D6B3D}
 
-    /* ── Product detail sheet ──────────────────────────────── */
-    .det-photo       { width:100%;height:230px;overflow:hidden;background:linear-gradient(135deg,var(--ivory-mist),var(--soft-blush-beige));display:flex;align-items:center;justify-content:center;font-size:72px;border-radius:26px 26px 0 0; }
-    .det-photo img   { width:100%;height:100%;object-fit:cover; }
-    .det-brand       { font-size:10px;color:var(--true-terracotta);letter-spacing:.14em;text-transform:uppercase;font-weight:600;margin-bottom:4px; }
-    .det-name        { font-family:'Cormorant Garamond',Georgia,serif;font-size:26px;font-weight:500;margin-bottom:14px;line-height:1.2;color:var(--espresso-black); }
-    .sec-lbl         { font-size:10px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--stone-grey);margin-bottom:7px;margin-top:20px;display:block; }
-    .sec-txt         { font-size:13px;line-height:1.7;color:var(--dark-mocha); }
-    .tags            { display:flex;flex-wrap:wrap;gap:6px; }
-    .tag             { padding:4px 13px;border-radius:16px;background:var(--ivory-mist);color:var(--dark-mocha);font-size:12px;font-weight:500; }
-    .tag.green       { background:var(--porcelain);color:var(--espresso-black); }
+    /* ── Routines ── */
+    .r-card{background:var(--pearl);border-radius:16px;padding:17px 20px;margin-bottom:12px;box-shadow:0 2px 12px rgba(58,53,48,.05);cursor:pointer;transition:transform .2s;display:flex;align-items:center;gap:14px;border:1px solid var(--ivory)}
+    .r-card:hover{transform:translateY(-2px)}
+    .r-em{font-size:28px;flex-shrink:0}
+    .r-name{font-family:'Cormorant Garamond',serif;font-size:18px;font-weight:500}
+    .r-cnt{font-size:12px;color:var(--stone);margin-top:2px}
 
-    /* ── Routines ──────────────────────────────────────────── */
-    .r-card          { background:var(--pure-pearl);border-radius:18px;padding:18px 20px;margin-bottom:12px;border:1px solid var(--ivory-mist);cursor:pointer;transition:transform .2s,box-shadow .2s;display:flex;align-items:center;gap:14px; }
-    .r-card:hover    { transform:translateY(-2px);box-shadow:0 6px 20px rgba(58,53,48,.08); }
-    .r-em            { font-size:30px;flex-shrink:0; }
-    .r-info          { flex:1; }
-    .r-name          { font-family:'Cormorant Garamond',Georgia,serif;font-size:19px;font-weight:500;color:var(--espresso-black); }
-    .r-cnt           { font-size:12px;color:var(--warm-taupe);margin-top:2px; }
-    .r-arr           { color:var(--pebble-sand);font-size:22px; }
-    .step-row        { display:flex;align-items:center;gap:12px;padding:14px 0;border-bottom:1px solid var(--ivory-mist); }
-    .step-num        { width:26px;height:26px;border-radius:50%;background:var(--ivory-mist);color:var(--true-terracotta);font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0; }
-    .step-ph         { width:48px;height:48px;border-radius:12px;overflow:hidden;background:linear-gradient(135deg,var(--ivory-mist),var(--soft-blush-beige));display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0; }
-    .step-ph img     { width:100%;height:100%;object-fit:cover; }
+    /* ── Routine step rows ── */
+    .step-row{display:flex;align-items:center;gap:10px;padding:12px 0;border-bottom:1px solid var(--ivory);transition:opacity .2s}
+    .step-row.dragging{opacity:.4}
+    .step-row.drag-over{border-top:2px solid var(--terra)}
+    .drag-handle{color:var(--silver);font-size:16px;cursor:grab;padding:2px 4px;flex-shrink:0;touch-action:none}
+    .drag-handle:active{cursor:grabbing}
+    .step-num-label{display:flex;flex-direction:column;align-items:center;flex-shrink:0;min-width:36px}
+    .step-num{width:24px;height:24px;border-radius:50%;background:var(--ivory);color:var(--terra);font-size:10px;font-weight:700;display:flex;align-items:center;justify-content:center}
+    .step-name-sm{font-size:8.5px;color:var(--stone);font-weight:600;letter-spacing:.04em;text-transform:uppercase;margin-top:2px;text-align:center;max-width:44px;line-height:1.2}
+    .step-ph{width:44px;height:44px;border-radius:10px;overflow:hidden;background:linear-gradient(135deg,var(--ivory),var(--blush));display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0}
+    .step-ph img{width:100%;height:100%;object-fit:cover}
+    .step-ghost{display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--ivory)}
+    .step-ghost-btn{display:flex;align-items:center;gap:8px;background:none;border:1.5px dashed var(--silver);border-radius:12px;padding:8px 14px;cursor:pointer;transition:all .2s;font-family:'Nunito',sans-serif;font-size:12px;font-weight:600;color:var(--stone);flex:1}
+    .step-ghost-btn:hover{border-color:var(--terra);color:var(--terra);background:var(--ivory)}
 
-    /* ── Form inputs ───────────────────────────────────────── */
-    .inp             { width:100%;border:1.5px solid var(--cream-silk);border-radius:12px;padding:10px 15px;font-family:'Nunito',sans-serif;font-size:14px;color:var(--espresso-black);outline:none;background:var(--warm-white);transition:border-color .2s;margin-top:7px; }
-    .inp:focus       { border-color:var(--true-terracotta); }
-    .form-lbl        { font-size:10.5px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--stone-grey);margin-top:18px;display:block; }
-    .em-pick         { display:flex;flex-wrap:wrap;gap:8px;margin-top:9px; }
-    .em-btn          { width:40px;height:40px;border-radius:11px;border:1.5px solid var(--cream-silk);background:var(--warm-white);font-size:19px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .2s; }
-    .em-btn.on       { border-color:var(--true-terracotta);background:var(--dune-blush); }
+    /* ── Product list in modals ── */
+    .p-list-row{display:flex;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid var(--ivory);cursor:pointer;transition:background .15s}
+    .p-list-row:hover{background:var(--linen);margin:0 -24px;padding:12px 24px}
+    .p-list-ph{width:36px;height:36px;border-radius:8px;overflow:hidden;background:var(--ivory);display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0}
+    .p-list-ph img{width:100%;height:100%;object-fit:cover}
 
-    /* ── Product list in modals ────────────────────────────── */
-    .p-list-row      { display:flex;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid var(--ivory-mist);cursor:pointer;transition:background .15s;border-radius:4px; }
-    .p-list-row:hover{ background:var(--warm-linen);margin:0 -24px;padding:12px 24px; }
-    .p-list-ph       { width:40px;height:40px;border-radius:9px;overflow:hidden;background:var(--ivory-mist);display:flex;align-items:center;justify-content:center;font-size:19px;flex-shrink:0; }
-    .p-list-ph img   { width:100%;height:100%;object-fit:cover; }
+    /* ── Inputs ── */
+    .inp{width:100%;border:1.5px solid var(--cream);border-radius:10px;padding:10px 14px;font-family:'Nunito',sans-serif;font-size:14px;color:var(--espresso);outline:none;background:var(--pearl);transition:border-color .2s;margin-top:6px}
+    .inp:focus{border-color:var(--terra)}
+    .lbl{font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--stone);margin-top:14px;display:block}
+    .em-pick{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px}
+    .em-btn{width:38px;height:38px;border-radius:10px;border:1.5px solid var(--cream);background:var(--pearl);font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .2s}
+    .em-btn.on{border-color:var(--terra);background:var(--ivory)}
 
-    /* ── Chat ──────────────────────────────────────────────── */
-    .chat-hdr        { display:flex;align-items:center;gap:14px;padding:18px 22px;background:var(--pure-pearl);border-bottom:1px solid var(--cream-silk);flex-shrink:0; }
-    .aesu-av         { width:46px;height:46px;border-radius:50%;background:linear-gradient(145deg,var(--spiced-amber),var(--dune-blush));display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0;border:2px solid var(--warm-white); }
-    .aesu-nm         { font-family:'Cormorant Garamond',Georgia,serif;font-size:19px;font-weight:500;color:var(--espresso-black); }
-    .aesu-sub        { font-size:11px;color:var(--warm-taupe);margin-top:1px; }
-    .aesu-dot        { display:inline-block;width:7px;height:7px;border-radius:50%;background:#7BAE7F;margin-right:5px;vertical-align:middle; }
-    .msgs            { flex:1;overflow-y:auto;padding:20px 18px;display:flex;flex-direction:column;gap:14px;scrollbar-width:none; }
-    .msgs::-webkit-scrollbar { display:none; }
-    .msg             { display:flex;gap:10px;max-width:90%; }
-    .msg.u           { margin-left:auto;flex-direction:row-reverse; }
-    .av              { width:32px;height:32px;border-radius:50%;background:linear-gradient(145deg,var(--spiced-amber),var(--dune-blush));display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0; }
-    .msg.u .av       { background:linear-gradient(145deg,var(--warm-caramel),var(--honey-amber)); }
-    .bubble          { padding:11px 15px;border-radius:18px;font-size:13.5px;line-height:1.6;background:var(--pure-pearl);border:1px solid var(--ivory-mist);border-bottom-left-radius:4px;white-space:pre-wrap;word-break:break-word;color:var(--espresso-black); }
-    .msg.u .bubble   { background:var(--espresso-black);color:var(--warm-white);border:none;border-bottom-left-radius:18px;border-bottom-right-radius:4px; }
-    .chat-inp-area   { padding:12px 16px 22px;background:var(--pure-pearl);border-top:1px solid var(--cream-silk);display:flex;gap:10px;align-items:flex-end;flex-shrink:0; }
-    .chat-inp        { flex:1;border:1.5px solid var(--cream-silk);border-radius:22px;padding:10px 17px;font-family:'Nunito',sans-serif;font-size:13.5px;color:var(--espresso-black);outline:none;resize:none;max-height:100px;background:var(--warm-linen);transition:border-color .2s;line-height:1.5; }
-    .chat-inp:focus  { border-color:var(--true-terracotta); }
-    .chat-inp::placeholder { color:var(--stone-grey); }
-    .chat-send           { width:40px;height:40px;border-radius:50%;background:var(--true-terracotta);border:none;color:var(--pure-pearl);font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:background .2s; }
-    .chat-send:hover     { background:var(--deep-clay); }
-    .chat-send:disabled  { background:var(--pebble-sand);cursor:default; }
-    .dots span           { display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--spiced-amber);margin:0 2px;animation:bop 1.1s infinite; }
-    .dots span:nth-child(2) { animation-delay:.18s; }
-    .dots span:nth-child(3) { animation-delay:.36s; }
-    @keyframes bop { 0%,60%,100%{transform:translateY(0)} 30%{transform:translateY(-7px)} }
+    /* ── Quiz / Aesu ── */
+    .quiz-wrap{flex:1;display:flex;flex-direction:column;overflow:hidden}
+    .quiz-hdr{display:flex;align-items:center;gap:12px;padding:16px 20px;background:var(--pearl);border-bottom:1px solid var(--cream);flex-shrink:0}
+    .aesu-av{width:44px;height:44px;border-radius:50%;background:linear-gradient(135deg,var(--amber),var(--dune));display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0}
+    .aesu-nm{font-family:'Cormorant Garamond',serif;font-size:18px;font-weight:500}
+    .aesu-st{font-size:11px;color:#8BA888;font-weight:600}
+    .quiz-restart{margin-left:auto;background:none;border:none;cursor:pointer;font-size:11px;font-weight:600;color:var(--stone);letter-spacing:.08em;text-transform:uppercase;transition:color .2s}
+    .quiz-restart:hover{color:var(--terra)}
 
-    /* ── Full-screen overlays ──────────────────────────────── */
-    .spin-over       { position:fixed;inset:0;background:rgba(58,53,48,.76);display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:300;gap:18px; }
-    .spin            { width:48px;height:48px;border:3px solid rgba(253,252,250,.2);border-top-color:var(--pure-pearl);border-radius:50%;animation:sk-rot .75s linear infinite; }
-    .spin-t          { color:var(--pure-pearl);font-family:'Cormorant Garamond',Georgia,serif;font-size:20px;font-style:italic; }
-    .spin-s          { color:rgba(253,252,250,.6);font-size:12px;letter-spacing:.03em; }
+    .quiz-msgs{flex:1;overflow-y:auto;padding:20px;display:flex;flex-direction:column;gap:14px;scrollbar-width:none}
+    .quiz-msgs::-webkit-scrollbar{display:none}
+    .qmsg{display:flex;gap:10px;max-width:90%}
+    .qmsg.u{margin-left:auto;flex-direction:row-reverse}
+    .qav{width:30px;height:30px;border-radius:50%;background:linear-gradient(135deg,var(--amber),var(--dune));display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0}
+    .qmsg.u .qav{background:linear-gradient(135deg,var(--caramel),var(--honey))}
+    .qbubble{padding:11px 15px;border-radius:18px;font-size:13.5px;line-height:1.6;background:var(--pearl);border:1px solid var(--ivory);border-bottom-left-radius:4px;white-space:pre-wrap;word-break:break-word}
+    .qmsg.u .qbubble{background:var(--espresso);color:var(--warm-white);border:none;border-bottom-left-radius:18px;border-bottom-right-radius:4px}
+    .dots span{display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--amber);margin:0 2px;animation:bop 1.1s infinite}
+    .dots span:nth-child(2){animation-delay:.18s}
+    .dots span:nth-child(3){animation-delay:.36s}
+    @keyframes bop{0%,60%,100%{transform:translateY(0)}30%{transform:translateY(-7px)}}
 
-    /* ── Toast notification ────────────────────────────────── */
-    .toast           { position:fixed;top:16px;left:50%;transform:translateX(-50%);background:var(--espresso-black);color:var(--warm-white);padding:8px 20px;border-radius:22px;font-size:12px;font-weight:600;letter-spacing:.04em;z-index:400;opacity:0;transition:opacity .25s;white-space:nowrap; }
-    .toast.show      { opacity:1; }
+    .quiz-choices{padding:0 20px 12px;display:flex;flex-wrap:wrap;gap:8px}
+    .q-choice{padding:8px 16px;border-radius:22px;border:1.5px solid var(--terra);background:var(--pearl);font-family:'Nunito',sans-serif;font-size:13px;font-weight:500;color:var(--terra);cursor:pointer;transition:all .2s}
+    .q-choice:hover{background:var(--terra);color:var(--pearl)}
+
+    .quiz-inp-area{padding:10px 16px 20px;background:var(--pearl);border-top:1px solid var(--cream);display:flex;gap:10px;align-items:flex-end;flex-shrink:0}
+    .quiz-inp{flex:1;border:1.5px solid var(--cream);border-radius:20px;padding:10px 16px;font-family:'Nunito',sans-serif;font-size:13.5px;color:var(--espresso);outline:none;resize:none;max-height:80px;background:var(--linen);transition:border-color .2s;line-height:1.45}
+    .quiz-inp:focus{border-color:var(--terra)}
+    .quiz-inp::placeholder{color:var(--stone)}
+    .quiz-send{width:38px;height:38px;border-radius:50%;background:var(--terra);border:none;color:var(--pearl);font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:background .2s}
+    .quiz-send:hover{background:var(--clay)}
+    .quiz-send:disabled{background:var(--pebble);cursor:default}
+
+    /* ── Recommendation cards ── */
+    .rec-section{padding:0 20px 32px}
+    .rec-title{font-family:'Cormorant Garamond',serif;font-size:20px;font-weight:500;margin-bottom:4px}
+    .rec-profile{font-size:12px;color:var(--taupe);line-height:1.6;margin-bottom:18px}
+    .rec-card{background:var(--pearl);border-radius:16px;padding:14px 16px;margin-bottom:10px;border:1px solid var(--ivory);display:flex;gap:12px;align-items:center}
+    .rec-ph{width:48px;height:48px;border-radius:10px;overflow:hidden;background:linear-gradient(135deg,var(--ivory),var(--blush));display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0}
+    .rec-ph img{width:100%;height:100%;object-fit:cover}
+    .rec-body{flex:1;min-width:0}
+    .rec-brand{font-size:10px;color:var(--terra);font-weight:600;letter-spacing:.08em;text-transform:uppercase}
+    .rec-name{font-size:13px;font-weight:600;line-height:1.3;margin:2px 0 4px}
+    .rec-reason{font-size:11.5px;color:var(--taupe);line-height:1.5}
+    .rec-add{width:30px;height:30px;border-radius:50%;background:var(--terra);color:var(--pearl);border:none;font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .2s}
+    .rec-add:hover{background:var(--clay);transform:scale(1.1)}
+    .rec-add.added{background:var(--greige);cursor:default}
+    .rec-actions{display:flex;gap:10px;margin-top:16px;padding-bottom:4px}
+
+    /* ── Overlays ── */
+    .spin-over{position:fixed;inset:0;background:rgba(58,53,48,.76);display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:300;gap:16px}
+    .spin{width:46px;height:46px;border:3px solid rgba(253,252,250,.2);border-top-color:var(--pearl);border-radius:50%;animation:rot .75s linear infinite}
+    .spin-t{color:var(--pearl);font-family:'Cormorant Garamond',serif;font-size:20px;font-style:italic}
+    .spin-s{color:rgba(253,252,250,.6);font-size:12px}
+    .toast{position:fixed;top:16px;left:50%;transform:translateX(-50%);background:var(--espresso);color:var(--warm-white);padding:8px 20px;border-radius:22px;font-size:12px;font-weight:600;z-index:400;opacity:0;transition:opacity .25s;white-space:nowrap}
+    .toast.show{opacity:1}
   </style>
 </head>
 <body>
@@ -224,43 +222,35 @@
     </div>
   </div>
 
-  <!-- CDN ─────────────────────────────────────────────────────────── -->
   <script src="https://unpkg.com/react@18/umd/react.production.min.js" crossorigin></script>
   <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js" crossorigin></script>
   <script src="https://unpkg.com/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
   <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
 
-  <!-- Config ──────────────────────────────────────────────────────── -->
   <script>
-    // ── UPDATE THESE THREE VALUES ──────────────────────────────────────────
     const SUPABASE_URL      = 'https://tclsndvassbosributcj.supabase.co';
     const SUPABASE_ANON_KEY = 'sb_publishable_IuaOUqFtitxNZEvbUn7SOw_kO3RkdMe';
     const WORKER_URL        = 'https://korean-skincare-app.naomi-c-lovera.workers.dev';
-    // ──────────────────────────────────────────────────────────────────────
 
-    // Step badge colors — all from Aesu palette
     const STEPS = [
-      { id:1,  name:'Oil Cleanser',    emoji:'🫧', bg:'#EAE0D8', fg:'#6B5E52' },  // Cream Silk
-      { id:2,  name:'Water Cleanser',  emoji:'💧', bg:'#EFE8E0', fg:'#6B5E52' },  // Porcelain
-      { id:3,  name:'Exfoliator',      emoji:'✨', bg:'#F0D0B8', fg:'#A64830' },  // Soft Coral Mist / Deep Clay
-      { id:4,  name:'Toner',           emoji:'🌊', bg:'#D4B8A0', fg:'#6B5E52' },  // Apricot Nude
-      { id:5,  name:'Essence',         emoji:'🌸', bg:'#E8C4B0', fg:'#A64830' },  // Peach Blush / Deep Clay
-      { id:6,  name:'Serum / Ampoule', emoji:'💎', bg:'#E8AA88', fg:'#A64830' },  // Warm Sand / Deep Clay
-      { id:7,  name:'Sheet Mask',      emoji:'🩵', bg:'#DED6CE', fg:'#6B5E52' },  // Greige Mist
-      { id:8,  name:'Eye Cream',       emoji:'🌙', bg:'#D4CBC2', fg:'#6B5E52' },  // Pebble Sand
-      { id:9,  name:'Moisturizer',     emoji:'🧴', bg:'#F0CDB0', fg:'#A64830' },  // Dune Blush / Deep Clay
-      { id:10, name:'Sunscreen',       emoji:'☀️', bg:'#D4825A', fg:'#FDFCFA' },  // Spiced Amber / Pure Pearl
+      { id:1,  name:'Oil Cleanser',   emoji:'🫧', bg:'#EAE0D8', fg:'#6B5E52' },
+      { id:2,  name:'Water Cleanser', emoji:'💧', bg:'#EFE8E0', fg:'#6B5E52' },
+      { id:3,  name:'Exfoliator',     emoji:'✨', bg:'#F0D0B8', fg:'#A64830' },
+      { id:4,  name:'Toner',          emoji:'🌊', bg:'#D4B8A0', fg:'#6B5E52' },
+      { id:5,  name:'Essence',        emoji:'🌸', bg:'#E8C4B0', fg:'#A64830' },
+      { id:6,  name:'Serum',          emoji:'💎', bg:'#E8AA88', fg:'#A64830' },
+      { id:7,  name:'Sheet Mask',     emoji:'🩵', bg:'#DED6CE', fg:'#6B5E52' },
+      { id:8,  name:'Eye Cream',      emoji:'🌙', bg:'#D4CBC2', fg:'#6B5E52' },
+      { id:9,  name:'Moisturizer',    emoji:'🧴', bg:'#F0CDB0', fg:'#A64830' },
+      { id:10, name:'Sunscreen',      emoji:'☀️', bg:'#D4825A', fg:'#FDFCFA' },
     ];
     const ROUTINE_EMOJIS = ['🌅','🌙','🌿','💆','✨','🫧','💎','🌸','⭐','🍃','🔥','🫶'];
   </script>
 
-  <!-- App ─────────────────────────────────────────────────────────── -->
   <script type="text/babel">
     const { useState, useEffect, useRef } = React;
-
     const db = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-    // ── Session ID (localStorage UUID → replace with Supabase Auth for multi-user) ─
     function getUserId() {
       let uid = localStorage.getItem('sk_uid');
       if (!uid) { uid = crypto.randomUUID(); localStorage.setItem('sk_uid', uid); }
@@ -268,7 +258,6 @@
     }
     const USER_ID = getUserId();
 
-    // ── Image compression ──────────────────────────────────────────────────
     function compressImage(file, max = 600) {
       return new Promise(res => {
         const img = new Image();
@@ -277,7 +266,7 @@
           let { width: w, height: h } = img;
           if (w > max || h > max) {
             if (w > h) { h = Math.round(h / w * max); w = max; }
-            else       { w = Math.round(w / h * max); h = max; }
+            else { w = Math.round(w / h * max); h = max; }
           }
           const c = document.createElement('canvas');
           c.width = w; c.height = h;
@@ -289,32 +278,28 @@
       });
     }
 
-    // ── Worker calls ──────────────────────────────────────────────────────
     async function callAnalyze(b64) {
       const r = await fetch(`${WORKER_URL}/analyze`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ imageBase64: b64 }),
       });
-      if (!r.ok) throw new Error(`Analyze failed: ${r.status}`);
+      if (!r.ok) throw new Error(`Analyze ${r.status}`);
       return r.json();
     }
 
-    async function callChat(history, products) {
-      const r = await fetch(`${WORKER_URL}/chat`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+    async function callQuiz(messages, products) {
+      const r = await fetch(`${WORKER_URL}/quiz`, {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          messages: history,
-          products: products.map(p => ({ name: p.name, brand: p.brand, step_name: p.step_name })),
+          messages,
+          products: products.map(p => ({ name: p.name, brand: p.brand, step_name: p.step_name, step_id: p.step_id })),
+          catalogue: [],
         }),
       });
-      if (!r.ok) throw new Error(`Chat failed: ${r.status}`);
-      const d = await r.json();
-      return d.reply;
+      if (!r.ok) throw new Error(`Quiz ${r.status}`);
+      return r.json();
     }
 
-    // ── Toast ──────────────────────────────────────────────────────────────
     let toastTimer;
     function showToast(msg) {
       let el = document.getElementById('sk-toast');
@@ -325,68 +310,164 @@
       toastTimer = setTimeout(() => el.classList.remove('show'), 2400);
     }
 
-    // ═════════════════════════════════════════════════════════════════════
-    // App component
-    // ═════════════════════════════════════════════════════════════════════
+    // ─────────────────────────────────────────────────────────────────────
     function App() {
-      const [loading, setLoading]               = useState(true);
-      const [tab, setTab]                       = useState('products');
-      const [products, setProducts]             = useState([]);
-      const [routines, setRoutines]             = useState([]);
-      const [messages, setMessages]             = useState([{
-        role: 'assistant',
-        content: 'I\'m Dear Aesu, your personal K-beauty Skincare Advisor.\n\nTell me about your skin concerns, your current routine, or anything K-beauty — I\'ll help you glow!',
-      }]);
-      const [filterStep, setFilterStep]         = useState(null);
-      const [analyzing, setAnalyzing]           = useState(false);
-      const [chatLoading, setChatLoading]       = useState(false);
-      const [chatInput, setChatInput]           = useState('');
-      const [showAddProd, setShowAddProd]       = useState(false);
-      const [selProd, setSelProd]               = useState(null);
-      const [selRoutine, setSelRoutine]         = useState(null);
-      const [addToRtnProd, setAddToRtnProd]     = useState(null);
-      const [showCreateRtn, setShowCreateRtn]   = useState(false);
-      const [rtnName, setRtnName]               = useState('');
-      const [rtnEmoji, setRtnEmoji]             = useState('✨');
+      const [loading, setLoading]         = useState(true);
+      const [tab, setTab]                 = useState('products');
+      const [products, setProducts]       = useState([]);
+      const [routines, setRoutines]       = useState([]);
+      const [analyzing, setAnalyzing]     = useState(false);
+
+      // Products filters
+      const [filterSteps, setFilterSteps]         = useState([]);
+      const [filterIngredients, setFilterIngredients] = useState([]);
+      const [filterSkinTypes, setFilterSkinTypes] = useState([]);
+      const [showFilters, setShowFilters]         = useState(false);
+
+      // Modals
+      const [showAddProd, setShowAddProd]     = useState(false);
+      const [selProd, setSelProd]             = useState(null);
+      const [selRoutine, setSelRoutine]       = useState(null);
+      const [addToRtnProd, setAddToRtnProd]   = useState(null);
+      const [showCreateRtn, setShowCreateRtn] = useState(false);
+      const [rtnName, setRtnName]             = useState('');
+      const [rtnEmoji, setRtnEmoji]           = useState('✨');
+
+      // Routine drag-drop
+      const [dragIdx, setDragIdx]           = useState(null);
+      const [dragOverIdx, setDragOverIdx]   = useState(null);
+
+      // +Step modal filter
+      const [stepModalFilter, setStepModalFilter] = useState(null);
+
+      // Quiz state
+      const [quizHistory, setQuizHistory]   = useState([]); // API messages
+      const [quizUI, setQuizUI]             = useState([]);  // rendered items
+      const [quizLoading, setQuizLoading]   = useState(false);
+      const [quizInput, setQuizInput]       = useState('');
+      const [quizChoices, setQuizChoices]   = useState([]);
+      const [quizRecs, setQuizRecs]         = useState(null);
+      const [addedRecs, setAddedRecs]       = useState({});
+      const [addingRoutine, setAddingRoutine] = useState(false);
+      const [quizStarted, setQuizStarted]   = useState(false);
 
       const fileRef = useRef();
       const camRef  = useRef();
-      const chatEnd = useRef();
+      const quizEnd = useRef();
 
-      // ── Load data ────────────────────────────────────────────────────────
+      // ── Load data ────────────────────────────────────────────────────
       useEffect(() => {
         (async () => {
           try {
-            const [{ data: prods, error: pErr }, { data: rtns, error: rErr }] = await Promise.all([
+            const [{ data: prods }, { data: rtns }] = await Promise.all([
               db.from('products').select('*').eq('user_id', USER_ID).order('created_at'),
               db.from('routines').select('*').eq('user_id', USER_ID).order('created_at'),
             ]);
-            if (pErr) throw pErr;
-            if (rErr) throw rErr;
             setProducts(prods || []);
             if (!rtns || rtns.length === 0) {
-              const { data: seeds, error: sErr } = await db.from('routines').insert([
+              const { data: seeds } = await db.from('routines').insert([
                 { user_id: USER_ID, name: 'AM Routine', emoji: '🌅', product_ids: [] },
                 { user_id: USER_ID, name: 'PM Routine', emoji: '🌙', product_ids: [] },
               ]).select();
-              if (sErr) throw sErr;
               setRoutines(seeds || []);
             } else {
               setRoutines(rtns);
             }
-          } catch (e) {
-            console.error('Load error:', e);
-          } finally {
-            setLoading(false);
-          }
+          } catch (e) { console.error(e); }
+          finally { setLoading(false); }
         })();
       }, []);
 
-      useEffect(() => {
-        chatEnd.current?.scrollIntoView({ behavior: 'smooth' });
-      }, [messages, chatLoading]);
+      useEffect(() => { quizEnd.current?.scrollIntoView({ behavior: 'smooth' }); }, [quizUI, quizLoading, quizChoices]);
 
-      // ── Handlers ────────────────────────────────────────────────────────
+      // ── Start quiz ───────────────────────────────────────────────────
+      async function startQuiz() {
+        setQuizStarted(true);
+        setQuizLoading(true);
+        try {
+          const initMsg = [{ role: 'user', content: 'Hi, I want to find my perfect skincare routine.' }];
+          const res = await callQuiz(initMsg, products);
+          setQuizHistory([...initMsg, { role: 'assistant', content: JSON.stringify(res) }]);
+          setQuizUI([{ type: 'bot', text: res.message }]);
+          setQuizChoices(res.choices || []);
+          if (res.phase === 'recommendation') setQuizRecs(res);
+        } catch { setQuizUI([{ type: 'bot', text: 'Sorry, something went wrong. Please try again! 🙏' }]); }
+        finally { setQuizLoading(false); }
+      }
+
+      async function sendQuizMessage(text) {
+        if (!text.trim() || quizLoading) return;
+        const userMsg = { role: 'user', content: text.trim() };
+        const newHistory = [...quizHistory, userMsg];
+        setQuizHistory(newHistory);
+        setQuizUI(prev => [...prev, { type: 'user', text: text.trim() }]);
+        setQuizChoices([]);
+        setQuizInput('');
+        setQuizLoading(true);
+        try {
+          const res = await callQuiz(newHistory, products);
+          setQuizHistory(h => [...h, { role: 'assistant', content: JSON.stringify(res) }]);
+          setQuizUI(prev => [...prev, { type: 'bot', text: res.message }]);
+          setQuizChoices(res.choices || []);
+          if (res.phase === 'recommendation') { setQuizRecs(res); setQuizChoices([]); }
+        } catch { setQuizUI(prev => [...prev, { type: 'bot', text: 'Sorry, something went wrong 🙏' }]); }
+        finally { setQuizLoading(false); }
+      }
+
+      function restartQuiz() {
+        setQuizStarted(false); setQuizHistory([]); setQuizUI([]);
+        setQuizChoices([]); setQuizRecs(null); setAddedRecs({});
+      }
+
+      // ── Add recommended product to collection ────────────────────────
+      async function addRecProduct(recProd) {
+        const step = STEPS.find(s => s.id === Number(recProd.step_id)) || STEPS[0];
+        const row = {
+          user_id: USER_ID,
+          name: recProd.name, brand: recProd.brand,
+          step_id: step.id, step_name: step.name, step_bg: step.bg, step_fg: step.fg, step_emoji: step.emoji,
+          how_to_use: recProd.how_to_use || '',
+          active_ingredients: recProd.active_ingredients || [],
+          suitable_for: recProd.suitable_for || [],
+          photo: '',
+        };
+        const { data, error } = await db.from('products').insert(row).select().single();
+        if (error) { showToast('Error saving product'); return null; }
+        setProducts(prev => [...prev, data]);
+        setAddedRecs(prev => ({ ...prev, [recProd.name]: true }));
+        showToast(`${recProd.name} added ✓`);
+        return data;
+      }
+
+      async function addFullRoutine() {
+        if (!quizRecs) return;
+        setAddingRoutine(true);
+        try {
+          const savedProducts = [];
+          for (const rp of quizRecs.products) {
+            if (addedRecs[rp.name]) {
+              const existing = products.find(p => p.name === rp.name);
+              if (existing) savedProducts.push(existing);
+            } else {
+              const saved = await addRecProduct(rp);
+              if (saved) savedProducts.push(saved);
+            }
+          }
+          const { data: rtn, error } = await db.from('routines').insert({
+            user_id: USER_ID,
+            name: quizRecs.routine_name || 'My Aesu Routine',
+            emoji: '🌸',
+            product_ids: savedProducts.map(p => p.id),
+          }).select().single();
+          if (error) throw error;
+          setRoutines(prev => [...prev, rtn]);
+          showToast('Routine added ✓');
+          setTab('routines');
+        } catch (e) { console.error(e); showToast('Error creating routine'); }
+        finally { setAddingRoutine(false); }
+      }
+
+      // ── Handle file/camera ────────────────────────────────────────────
       async function handleFile(e) {
         const file = e.target.files?.[0];
         if (!file) return;
@@ -402,45 +483,22 @@
             user_id: USER_ID,
             name: info.name || 'Unknown Product',
             brand: info.brand || 'Unknown Brand',
-            step_id: step.id,
-            step_name: step.name,
-            step_bg: step.bg,
-            step_fg: step.fg,
-            step_emoji: step.emoji,
+            step_id: step.id, step_name: step.name, step_bg: step.bg, step_fg: step.fg, step_emoji: step.emoji,
             how_to_use: info.how_to_use || '',
             active_ingredients: Array.isArray(info.active_ingredients) ? info.active_ingredients : [],
             suitable_for: Array.isArray(info.suitable_for) ? info.suitable_for : [],
-            photo: dataUrl,
+            photo: info.photo_url || dataUrl,
           };
           const { data, error } = await db.from('products').insert(row).select().single();
           if (error) throw error;
           setProducts(prev => [...prev, data]);
           showToast('Product saved ✓');
-        } catch (err) {
-          console.error(err);
-          alert('Could not analyze this product — please try again 🙏');
-        } finally {
-          setAnalyzing(false);
-        }
+          setSelProd(data); // ← open detail immediately
+        } catch (err) { console.error(err); alert('Could not analyze this product — please try again! 🙏'); }
+        finally { setAnalyzing(false); }
       }
 
-      async function sendChat() {
-        if (!chatInput.trim() || chatLoading) return;
-        const userMsg = { role: 'user', content: chatInput.trim() };
-        const history = [...messages, userMsg];
-        setMessages(history);
-        setChatInput('');
-        setChatLoading(true);
-        try {
-          const reply = await callChat(history, products);
-          setMessages(h => [...h, { role: 'assistant', content: reply }]);
-        } catch {
-          setMessages(h => [...h, { role: 'assistant', content: 'Something went wrong — please try again 🙏' }]);
-        } finally {
-          setChatLoading(false);
-        }
-      }
-
+      // ── Routine actions ───────────────────────────────────────────────
       async function addToRoutine(routineId, productId) {
         const rtn = routines.find(r => r.id === routineId);
         if (!rtn || (rtn.product_ids || []).includes(productId)) { setAddToRtnProd(null); return; }
@@ -459,12 +517,22 @@
         await db.from('routines').update({ product_ids: newIds }).eq('id', routineId);
       }
 
+      async function reorderRoutine(routineId, fromIdx, toIdx) {
+        const rtn = routines.find(r => r.id === routineId);
+        if (!rtn) return;
+        const ids = [...(rtn.product_ids || [])];
+        const [moved] = ids.splice(fromIdx, 1);
+        ids.splice(toIdx, 0, moved);
+        setRoutines(rs => rs.map(r => r.id === routineId ? { ...r, product_ids: ids } : r));
+        await db.from('routines').update({ product_ids: ids }).eq('id', routineId);
+      }
+
       async function createRoutine() {
         if (!rtnName.trim()) return;
         const { data, error } = await db.from('routines').insert({
           user_id: USER_ID, name: rtnName.trim(), emoji: rtnEmoji, product_ids: [],
         }).select().single();
-        if (error) { console.error(error); return; }
+        if (error) return;
         setRoutines(rs => [...rs, data]);
         setRtnName(''); setRtnEmoji('✨'); setShowCreateRtn(false);
       }
@@ -475,53 +543,117 @@
         const affected = routines.filter(r => (r.product_ids || []).includes(id));
         setRoutines(rs => rs.map(r => ({ ...r, product_ids: (r.product_ids || []).filter(pid => pid !== id) })));
         await db.from('products').delete().eq('id', id);
-        for (const r of affected) {
+        for (const r of affected)
           await db.from('routines').update({ product_ids: (r.product_ids || []).filter(pid => pid !== id) }).eq('id', r.id);
-        }
       }
 
+      // ── Derived data ──────────────────────────────────────────────────
       function getRoutineProducts(rtn) {
-        return (rtn.product_ids || [])
-          .map(id => products.find(p => p.id === id))
-          .filter(Boolean)
-          .sort((a, b) => a.step_id - b.step_id);
+        return (rtn.product_ids || []).map(id => products.find(p => p.id === id)).filter(Boolean);
       }
 
-      const filtered = filterStep ? products.filter(p => p.step_id === filterStep) : products;
+      const allIngredients = [...new Set(products.flatMap(p => p.active_ingredients || []))].sort();
+      const allSkinTypes   = [...new Set(products.flatMap(p => p.suitable_for || []))].sort();
 
-      // ── Tab: Products ────────────────────────────────────────────────────
+      const filteredProducts = products.filter(p => {
+        if (filterSteps.length && !filterSteps.includes(p.step_id)) return false;
+        if (filterIngredients.length && !filterIngredients.some(i => (p.active_ingredients || []).includes(i))) return false;
+        if (filterSkinTypes.length && !filterSkinTypes.some(s => (p.suitable_for || []).includes(s))) return false;
+        return true;
+      });
+
+      const hasFilters = filterSteps.length || filterIngredients.length || filterSkinTypes.length;
+
+      // ── Toggle filter helpers ─────────────────────────────────────────
+      function toggleArr(arr, setArr, val) {
+        setArr(arr.includes(val) ? arr.filter(v => v !== val) : [...arr, val]);
+      }
+
+      // ══════════════════════════════════════════════════════════════════
+      // RENDER — Products
+      // ══════════════════════════════════════════════════════════════════
       function renderProducts() {
         return (
           <>
             <div className="row">
               <h2 className="sec-title">
-                My Products{' '}
-                <span style={{fontFamily:'Nunito',fontSize:14,color:'var(--stone-grey)',fontWeight:400}}>({products.length})</span>
+                My Products <span style={{fontFamily:'Nunito',fontSize:13,color:'var(--stone)',fontWeight:400}}>({products.length})</span>
               </h2>
               <button className="btn-primary" onClick={() => setShowAddProd(true)}>＋ Add</button>
             </div>
 
+            {/* Filter toggle */}
             {products.length > 0 && (
-              <div className="chips">
-                <button className={`chip ${!filterStep ? 'on' : ''}`} onClick={() => setFilterStep(null)}>All</button>
-                {STEPS.filter(s => products.some(p => p.step_id === s.id)).map(s => (
-                  <button key={s.id} className={`chip ${filterStep === s.id ? 'on' : ''}`}
-                    onClick={() => setFilterStep(filterStep === s.id ? null : s.id)}>
-                    {s.emoji} {s.name}
-                  </button>
-                ))}
-              </div>
+              <>
+                <button className="filter-toggle" onClick={() => setShowFilters(v => !v)}>
+                  <span style={{fontSize:14}}>{showFilters ? '▲' : '▼'}</span>
+                  Filter{hasFilters ? ` (${filterSteps.length + filterIngredients.length + filterSkinTypes.length})` : ''}
+                  {hasFilters && (
+                    <span style={{color:'var(--terra)',marginLeft:4}} onClick={e => {
+                      e.stopPropagation();
+                      setFilterSteps([]); setFilterIngredients([]); setFilterSkinTypes([]);
+                    }}>✕ Clear</span>
+                  )}
+                </button>
+
+                {showFilters && (
+                  <div style={{marginBottom:14}}>
+                    <div className="filter-section">
+                      <span className="filter-label">By Step</span>
+                      <div className="filter-wrap">
+                        {STEPS.filter(s => products.some(p => p.step_id === s.id)).map(s => (
+                          <button key={s.id} className={`filter-chip ${filterSteps.includes(s.id) ? 'on' : ''}`}
+                            onClick={() => toggleArr(filterSteps, setFilterSteps, s.id)}>
+                            {s.emoji} {s.name}
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+                    {allIngredients.length > 0 && (
+                      <div className="filter-section">
+                        <span className="filter-label">By Active Ingredient</span>
+                        <div className="filter-wrap">
+                          {allIngredients.map(ing => (
+                            <button key={ing} className={`filter-chip ${filterIngredients.includes(ing) ? 'on' : ''}`}
+                              onClick={() => toggleArr(filterIngredients, setFilterIngredients, ing)}>
+                              {ing}
+                            </button>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+                    {allSkinTypes.length > 0 && (
+                      <div className="filter-section">
+                        <span className="filter-label">By Skin Type</span>
+                        <div className="filter-wrap">
+                          {allSkinTypes.map(st => (
+                            <button key={st} className={`filter-chip ${filterSkinTypes.includes(st) ? 'on' : ''}`}
+                              onClick={() => toggleArr(filterSkinTypes, setFilterSkinTypes, st)}>
+                              {st}
+                            </button>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+                    <div className="filter-divider" />
+                  </div>
+                )}
+              </>
             )}
 
-            {filtered.length === 0 ? (
+            {filteredProducts.length === 0 ? (
               <div className="empty">
                 <div className="empty-ico">🧴</div>
-                <div className="empty-t">No products yet</div>
-                <div className="empty-d">Tap "Add" to photograph your first product —<br />Claude will identify it and fill in everything!</div>
+                <div className="empty-t">{products.length === 0 ? 'No products yet' : 'No matches'}</div>
+                <div className="empty-d">
+                  {products.length === 0
+                    ? 'Tap "Add" to photograph a product —\nClaude will identify everything!'
+                    : 'Try adjusting your filters.'}
+                </div>
               </div>
             ) : (
               <div className="p-grid">
-                {filtered.map(p => (
+                {filteredProducts.map(p => (
                   <div className="p-card" key={p.id} onClick={() => setSelProd(p)}>
                     <div className="p-photo">
                       {p.photo ? <img src={p.photo} alt={p.name} /> : <span>{p.step_emoji}</span>}
@@ -533,8 +665,7 @@
                         <span className="badge" style={{background:p.step_bg,color:p.step_fg}}>
                           {p.step_emoji} {p.step_name}
                         </span>
-                        <button className="add-circ" title="Add to routine"
-                          onClick={e => { e.stopPropagation(); setAddToRtnProd(p); }}>＋</button>
+                        <button className="add-circ" onClick={e => { e.stopPropagation(); setAddToRtnProd(p); }}>＋</button>
                       </div>
                     </div>
                   </div>
@@ -545,12 +676,16 @@
         );
       }
 
-      // ── Tab: Routines ────────────────────────────────────────────────────
+      // ══════════════════════════════════════════════════════════════════
+      // RENDER — Routines
+      // ══════════════════════════════════════════════════════════════════
       function renderRoutines() {
         if (selRoutine) {
           const rtn = routines.find(r => r.id === selRoutine);
           if (!rtn) { setSelRoutine(null); return null; }
-          const rps = getRoutineProducts(rtn);
+          const rtnProds = getRoutineProducts(rtn);
+          const presentStepIds = new Set(rtnProds.map(p => p.step_id));
+
           return (
             <>
               <div className="row">
@@ -560,51 +695,76 @@
                 </div>
                 <button className="btn-outline" onClick={() => setAddToRtnProd({ _rtnId: rtn.id })}>＋ Step</button>
               </div>
-              {rps.length === 0 ? (
-                <div className="empty">
-                  <div className="empty-ico">{rtn.emoji}</div>
-                  <div className="empty-t">Routine is empty</div>
-                  <div className="empty-d">Tap "＋ Step" or tap the ＋ on any product card.</div>
-                </div>
-              ) : rps.map(p => (
-                <div className="step-row" key={p.id}>
-                  <div className="step-num">{p.step_id}</div>
-                  <div className="step-ph">
-                    {p.photo ? <img src={p.photo} alt={p.name} /> : <span>{p.step_emoji}</span>}
-                  </div>
-                  <div style={{flex:1,minWidth:0}}>
-                    <div style={{fontSize:10,color:'var(--true-terracotta)',fontWeight:600,letterSpacing:'.1em',textTransform:'uppercase',marginBottom:2}}>{p.brand}</div>
-                    <div style={{fontSize:14,fontWeight:600,marginBottom:5,color:'var(--espresso-black)'}}>{p.name}</div>
-                    <span className="badge" style={{background:p.step_bg,color:p.step_fg}}>{p.step_emoji} {p.step_name}</span>
-                  </div>
-                  <button className="btn-ghost" onClick={() => removeFromRoutine(rtn.id, p.id)} title="Remove">✕</button>
-                </div>
-              ))}
+
+              {STEPS.map(step => {
+                const prod = rtnProds.find(p => p.step_id === step.id);
+                const idx  = rtnProds.indexOf(prod);
+
+                if (prod) {
+                  return (
+                    <div key={step.id}
+                      className={`step-row ${dragIdx === idx ? 'dragging' : ''} ${dragOverIdx === idx && dragIdx !== idx ? 'drag-over' : ''}`}
+                      draggable
+                      onDragStart={() => setDragIdx(idx)}
+                      onDragOver={e => { e.preventDefault(); setDragOverIdx(idx); }}
+                      onDrop={() => {
+                        if (dragIdx !== null && dragIdx !== idx) reorderRoutine(rtn.id, dragIdx, idx);
+                        setDragIdx(null); setDragOverIdx(null);
+                      }}
+                      onDragEnd={() => { setDragIdx(null); setDragOverIdx(null); }}
+                    >
+                      <span className="drag-handle">⠿</span>
+                      <div className="step-num-label">
+                        <div className="step-num">{step.id}</div>
+                        <div className="step-name-sm">{step.name}</div>
+                      </div>
+                      <div className="step-ph">
+                        {prod.photo ? <img src={prod.photo} alt={prod.name} /> : <span>{step.emoji}</span>}
+                      </div>
+                      <div style={{flex:1,minWidth:0}}>
+                        <div style={{fontSize:10,color:'var(--terra)',fontWeight:600,letterSpacing:'.08em',textTransform:'uppercase'}}>{prod.brand}</div>
+                        <div style={{fontSize:13.5,fontWeight:600,lineHeight:1.3,marginBottom:4}}>{prod.name}</div>
+                        <span className="badge" style={{background:prod.step_bg,color:prod.step_fg}}>{step.emoji} {step.name}</span>
+                      </div>
+                      <button className="btn-ghost" onClick={() => removeFromRoutine(rtn.id, prod.id)}>✕</button>
+                    </div>
+                  );
+                } else {
+                  return (
+                    <div key={step.id} className="step-ghost">
+                      <div className="step-num-label">
+                        <div className="step-num" style={{background:'var(--cream)',color:'var(--stone)'}}>{step.id}</div>
+                        <div className="step-name-sm" style={{color:'var(--silver)'}}>{step.name}</div>
+                      </div>
+                      <button className="step-ghost-btn"
+                        onClick={() => setAddToRtnProd({ _rtnId: rtn.id, _stepFilter: step.id })}>
+                        <span style={{fontSize:16}}>{step.emoji}</span>
+                        Add {step.name}
+                      </button>
+                    </div>
+                  );
+                }
+              })}
             </>
           );
         }
+
         return (
           <>
             <div className="row">
               <h2 className="sec-title">My Routines</h2>
               <button className="btn-primary" onClick={() => setShowCreateRtn(true)}>＋ New</button>
             </div>
-            {routines.length === 0 ? (
-              <div className="empty">
-                <div className="empty-ico">📋</div>
-                <div className="empty-t">No routines yet</div>
-                <div className="empty-d">Create your first routine — AM, PM, or anything you like!</div>
-              </div>
-            ) : routines.map(r => {
+            {routines.map(r => {
               const cnt = (r.product_ids || []).filter(id => products.find(p => p.id === id)).length;
               return (
                 <div className="r-card" key={r.id} onClick={() => setSelRoutine(r.id)}>
                   <div className="r-em">{r.emoji}</div>
-                  <div className="r-info">
+                  <div style={{flex:1}}>
                     <div className="r-name">{r.name}</div>
-                    <div className="r-cnt">{cnt === 0 ? 'No products yet' : `${cnt} step${cnt !== 1 ? 's' : ''}`}</div>
+                    <div className="r-cnt">{cnt === 0 ? 'No steps yet' : `${cnt} step${cnt !== 1 ? 's' : ''}`}</div>
                   </div>
-                  <div className="r-arr">›</div>
+                  <span style={{color:'var(--silver)',fontSize:20}}>›</span>
                 </div>
               );
             })}
@@ -612,63 +772,137 @@
         );
       }
 
-      // ── Tab: Dear Aesu ───────────────────────────────────────────────────
+      // ══════════════════════════════════════════════════════════════════
+      // RENDER — Dear Aesu quiz
+      // ══════════════════════════════════════════════════════════════════
       function renderAesu() {
         return (
-          <div className="sk-chat-wrap">
-            <div className="chat-hdr">
+          <div className="quiz-wrap">
+            <div className="quiz-hdr">
               <div className="aesu-av">🌸</div>
               <div>
                 <div className="aesu-nm">Dear Aesu</div>
-                <div className="aesu-sub"><span className="aesu-dot" />K-beauty advisor · always here</div>
+                <div className="aesu-st">● Skin Assessment</div>
               </div>
-            </div>
-            <div className="msgs">
-              {messages.map((m, i) => (
-                <div key={i} className={`msg ${m.role === 'user' ? 'u' : ''}`}>
-                  <div className="av">{m.role === 'user' ? '🌿' : '🌸'}</div>
-                  <div className="bubble">{m.content}</div>
-                </div>
-              ))}
-              {chatLoading && (
-                <div className="msg">
-                  <div className="av">🌸</div>
-                  <div className="bubble"><div className="dots"><span/><span/><span/></div></div>
-                </div>
+              {quizStarted && (
+                <button className="quiz-restart" onClick={restartQuiz}>Restart</button>
               )}
-              <div ref={chatEnd} />
             </div>
-            <div className="chat-inp-area">
-              <textarea className="chat-inp" value={chatInput}
-                onChange={e => setChatInput(e.target.value)}
-                onKeyDown={e => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendChat(); } }}
-                placeholder="Ask Dear Aesu anything…" rows={1} />
-              <button className="chat-send" onClick={sendChat} disabled={chatLoading || !chatInput.trim()}>↑</button>
-            </div>
+
+            {!quizStarted ? (
+              <div style={{flex:1,display:'flex',flexDirection:'column',alignItems:'center',justifyContent:'center',padding:'32px 28px',textAlign:'center',gap:20}}>
+                <div style={{fontSize:52}}>🌸</div>
+                <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:24,fontWeight:500,color:'var(--espresso)'}}>
+                  Find your perfect routine
+                </div>
+                <div style={{fontSize:13.5,color:'var(--taupe)',lineHeight:1.7,maxWidth:300}}>
+                  I'll ask you a few questions about your skin and recommend the ideal K-beauty routine, personalised just for you.
+                </div>
+                <button className="btn-primary" style={{marginTop:8,padding:'12px 32px',fontSize:14}} onClick={startQuiz}>
+                  Start my skin assessment
+                </button>
+              </div>
+            ) : (
+              <>
+                <div className="quiz-msgs">
+                  {quizUI.map((item, i) => (
+                    <div key={i} className={`qmsg ${item.type === 'user' ? 'u' : ''}`}>
+                      <div className="qav">{item.type === 'user' ? '🌿' : '🌸'}</div>
+                      <div className="qbubble">{item.text}</div>
+                    </div>
+                  ))}
+                  {quizLoading && (
+                    <div className="qmsg">
+                      <div className="qav">🌸</div>
+                      <div className="qbubble"><div className="dots"><span/><span/><span/></div></div>
+                    </div>
+                  )}
+                  <div ref={quizEnd} />
+                </div>
+
+                {/* Choices */}
+                {!quizLoading && quizChoices.length > 0 && !quizRecs && (
+                  <div className="quiz-choices">
+                    {quizChoices.map((c, i) => (
+                      <button key={i} className="q-choice" onClick={() => sendQuizMessage(c)}>{c}</button>
+                    ))}
+                  </div>
+                )}
+
+                {/* Recommendations */}
+                {quizRecs && !quizLoading && (
+                  <div className="rec-section" style={{overflowY:'auto',flexShrink:0,maxHeight:'55dvh'}}>
+                    <div className="rec-title">{quizRecs.routine_name}</div>
+                    <div className="rec-profile">{quizRecs.skin_profile}</div>
+                    {(quizRecs.products || []).map((rp, i) => {
+                      const step = STEPS.find(s => s.id === Number(rp.step_id)) || STEPS[0];
+                      const isAdded = !!addedRecs[rp.name];
+                      return (
+                        <div key={i} className="rec-card">
+                          <div className="rec-ph"><span>{step.emoji}</span></div>
+                          <div className="rec-body">
+                            <div className="rec-brand">{rp.brand}</div>
+                            <div className="rec-name">{rp.name}</div>
+                            <span className="badge" style={{background:step.bg,color:step.fg,marginBottom:4}}>{step.emoji} {step.name}</span>
+                            <div className="rec-reason">{rp.reason}</div>
+                          </div>
+                          <button className={`rec-add ${isAdded ? 'added' : ''}`}
+                            disabled={isAdded} onClick={() => !isAdded && addRecProduct(rp)}
+                            title={isAdded ? 'Added' : 'Add to my products'}>
+                            {isAdded ? '✓' : '＋'}
+                          </button>
+                        </div>
+                      );
+                    })}
+                    <div className="rec-actions">
+                      <button className="btn-primary" style={{flex:1,justifyContent:'center'}}
+                        onClick={addFullRoutine} disabled={addingRoutine}>
+                        {addingRoutine ? 'Adding…' : '＋ Add full routine'}
+                      </button>
+                      <button className="btn-outline" onClick={restartQuiz}>Start over</button>
+                    </div>
+                  </div>
+                )}
+
+                {/* Input */}
+                {!quizRecs && (
+                  <div className="quiz-inp-area">
+                    <textarea className="quiz-inp" value={quizInput}
+                      onChange={e => setQuizInput(e.target.value)}
+                      onKeyDown={e => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendQuizMessage(quizInput); } }}
+                      placeholder="Or type your answer…" rows={1} />
+                    <button className="quiz-send" onClick={() => sendQuizMessage(quizInput)}
+                      disabled={quizLoading || !quizInput.trim()}>↑</button>
+                  </div>
+                )}
+              </>
+            )}
           </div>
         );
       }
 
-      // ── Modal: Add product ───────────────────────────────────────────────
+      // ══════════════════════════════════════════════════════════════════
+      // MODALS
+      // ══════════════════════════════════════════════════════════════════
       function modalAddProduct() {
         return (
           <div className="overlay" onClick={() => setShowAddProd(false)}>
             <div className="sheet" onClick={e => e.stopPropagation()}>
               <div className="handle" />
               <div className="sheet-pad">
-                <div className="m-title">Add a Product</div>
+                <div className="m-title">Add Product</div>
                 <div className="add-opts">
                   <div className="add-opt" onClick={() => camRef.current?.click()}>
                     <div className="add-opt-ico">📸</div>
-                    <div className="add-opt-lbl">Take a Photo</div>
+                    <div className="add-opt-lbl">Take Photo</div>
                   </div>
                   <div className="add-opt" onClick={() => fileRef.current?.click()}>
                     <div className="add-opt-ico">🖼️</div>
                     <div className="add-opt-lbl">Upload Image</div>
                   </div>
                 </div>
-                <p style={{marginTop:20,fontSize:12,color:'var(--warm-taupe)',textAlign:'center',lineHeight:1.7}}>
-                  Claude will auto-detect the product name, K-beauty step,<br />key ingredients & how to use ✨
+                <p style={{marginTop:18,fontSize:12,color:'var(--stone)',textAlign:'center',lineHeight:1.7}}>
+                  Claude will auto-detect the product name, K-beauty step, ingredients & usage ✨
                 </p>
               </div>
             </div>
@@ -676,7 +910,6 @@
         );
       }
 
-      // ── Modal: Product detail ────────────────────────────────────────────
       function modalProductDetail() {
         const p = selProd;
         return (
@@ -686,7 +919,7 @@
               <div className="det-photo">
                 {p.photo ? <img src={p.photo} alt={p.name} /> : <span>{p.step_emoji}</span>}
               </div>
-              <div className="sheet-pad" style={{paddingTop:22}}>
+              <div className="sheet-pad" style={{paddingTop:20}}>
                 <div className="det-brand">{p.brand}</div>
                 <div className="det-name">{p.name}</div>
                 <span className="badge" style={{background:p.step_bg,color:p.step_fg}}>
@@ -706,7 +939,7 @@
                     ? (p.suitable_for || []).map((s, i) => <span key={i} className="tag green">{s}</span>)
                     : <span className="tag">—</span>}
                 </div>
-                <div style={{display:'flex',gap:10,marginTop:28,marginBottom:8}}>
+                <div style={{display:'flex',gap:10,marginTop:24,marginBottom:4}}>
                   <button className="btn-primary" style={{flex:1,justifyContent:'center'}}
                     onClick={() => { setAddToRtnProd(p); setSelProd(null); }}>
                     Add to Routine
@@ -719,27 +952,46 @@
         );
       }
 
-      // ── Modal: Add to routine ────────────────────────────────────────────
       function modalAddToRoutine() {
         const isFromRtn = !!addToRtnProd._rtnId;
+        const rtnId     = isFromRtn ? addToRtnProd._rtnId : null;
+        const stepFilter = addToRtnProd._stepFilter || stepModalFilter;
+        const currentIds = isFromRtn ? (routines.find(r => r.id === rtnId)?.product_ids || []) : [];
+        const available = products.filter(p => !currentIds.includes(p.id));
+        const filtered  = stepFilter ? available.filter(p => p.step_id === stepFilter) : available;
+
         return (
-          <div className="overlay" onClick={() => setAddToRtnProd(null)}>
+          <div className="overlay" onClick={() => { setAddToRtnProd(null); setStepModalFilter(null); }}>
             <div className="sheet" onClick={e => e.stopPropagation()}>
               <div className="handle" />
               <div className="sheet-pad">
                 {isFromRtn ? (
                   <>
-                    <div className="m-title">Choose a product</div>
-                    {products.filter(p => !(routines.find(r => r.id === addToRtnProd._rtnId)?.product_ids || []).includes(p.id)).length === 0 ? (
-                      <p style={{color:'var(--warm-taupe)',fontSize:13,lineHeight:1.7}}>All your products are already in this routine — or add more products first!</p>
-                    ) : products
-                        .filter(p => !(routines.find(r => r.id === addToRtnProd._rtnId)?.product_ids || []).includes(p.id))
-                        .map(p => (
-                          <div key={p.id} className="p-list-row" onClick={() => addToRoutine(addToRtnProd._rtnId, p.id)}>
-                            <div className="p-list-ph">{p.photo ? <img src={p.photo} alt={p.name}/> : <span>{p.step_emoji}</span>}</div>
+                    <div className="m-title">Add a step</div>
+                    {/* Step filter chips */}
+                    {available.length > 0 && (
+                      <div className="chips" style={{marginBottom:16}}>
+                        <button className={`chip ${!stepFilter ? 'on' : ''}`} onClick={() => setStepModalFilter(null)}>All</button>
+                        {STEPS.filter(s => available.some(p => p.step_id === s.id)).map(s => (
+                          <button key={s.id} className={`chip ${stepFilter === s.id ? 'on' : ''}`}
+                            onClick={() => setStepModalFilter(stepFilter === s.id ? null : s.id)}>
+                            {s.emoji} {s.name}
+                          </button>
+                        ))}
+                      </div>
+                    )}
+                    {filtered.length === 0
+                      ? <p style={{color:'var(--stone)',fontSize:13}}>
+                          {available.length === 0
+                            ? 'All products are already in this routine!'
+                            : 'No products in this category yet.'}
+                        </p>
+                      : filtered.map(p => (
+                          <div key={p.id} className="p-list-row" onClick={() => { addToRoutine(rtnId, p.id); setStepModalFilter(null); }}>
+                            <div className="p-list-ph">{p.photo ? <img src={p.photo} alt={p.name} /> : <span>{p.step_emoji}</span>}</div>
                             <div style={{flex:1,minWidth:0}}>
-                              <div style={{fontSize:13,fontWeight:600,color:'var(--espresso-black)'}}>{p.name}</div>
-                              <div style={{fontSize:11,color:'var(--true-terracotta)',fontWeight:600,letterSpacing:'.06em',textTransform:'uppercase'}}>{p.brand}</div>
+                              <div style={{fontSize:13,fontWeight:600}}>{p.name}</div>
+                              <div style={{fontSize:11,color:'var(--terra)'}}>{p.brand}</div>
                             </div>
                             <span className="badge" style={{background:p.step_bg,color:p.step_fg}}>{p.step_emoji} {p.step_name}</span>
                           </div>
@@ -748,17 +1000,17 @@
                 ) : (
                   <>
                     <div className="m-title">Add to Routine</div>
-                    <p style={{fontSize:13,color:'var(--dark-mocha)',marginBottom:18,lineHeight:1.55}}>
-                      Where should <strong style={{color:'var(--espresso-black)'}}>{addToRtnProd.name}</strong> go?
+                    <p style={{fontSize:13,color:'var(--taupe)',marginBottom:16}}>
+                      Where should <strong>{addToRtnProd.name}</strong> go?
                     </p>
                     {routines.map(r => (
                       <div key={r.id} className="r-card" style={{marginBottom:10}} onClick={() => addToRoutine(r.id, addToRtnProd.id)}>
                         <div className="r-em" style={{fontSize:24}}>{r.emoji}</div>
-                        <div className="r-info">
+                        <div style={{flex:1}}>
                           <div className="r-name">{r.name}</div>
-                          <div className="r-cnt">{(r.product_ids || []).filter(id => products.find(p => p.id === id)).length} products</div>
+                          <div className="r-cnt">{(r.product_ids||[]).filter(id=>products.find(p=>p.id===id)).length} products</div>
                         </div>
-                        <div style={{color:'var(--true-terracotta)',fontSize:22,fontWeight:400}}>＋</div>
+                        <span style={{color:'var(--terra)',fontSize:20}}>＋</span>
                       </div>
                     ))}
                   </>
@@ -769,7 +1021,6 @@
         );
       }
 
-      // ── Modal: Create routine ────────────────────────────────────────────
       function modalCreateRoutine() {
         return (
           <div className="overlay" onClick={() => setShowCreateRtn(false)}>
@@ -777,19 +1028,18 @@
               <div className="handle" />
               <div className="sheet-pad">
                 <div className="m-title">New Routine</div>
-                <span className="form-lbl">Choose an emoji</span>
+                <span className="lbl">Emoji</span>
                 <div className="em-pick">
                   {ROUTINE_EMOJIS.map(em => (
-                    <button key={em} className={`em-btn ${rtnEmoji === em ? 'on' : ''}`}
-                      onClick={() => setRtnEmoji(em)}>{em}</button>
+                    <button key={em} className={`em-btn ${rtnEmoji === em ? 'on' : ''}`} onClick={() => setRtnEmoji(em)}>{em}</button>
                   ))}
                 </div>
-                <span className="form-lbl">Routine name</span>
+                <span className="lbl">Name</span>
                 <input className="inp" placeholder="e.g. Anti-aging PM Routine"
                   value={rtnName} onChange={e => setRtnName(e.target.value)}
                   onKeyDown={e => e.key === 'Enter' && createRoutine()} autoFocus />
-                <div style={{display:'flex',gap:10,marginTop:24}}>
-                  <button className="btn-primary" style={{flex:1,justifyContent:'center'}} onClick={createRoutine}>Create Routine</button>
+                <div style={{display:'flex',gap:10,marginTop:22}}>
+                  <button className="btn-primary" style={{flex:1,justifyContent:'center'}} onClick={createRoutine}>Create</button>
                   <button className="btn-outline" onClick={() => setShowCreateRtn(false)}>Cancel</button>
                 </div>
               </div>
@@ -798,7 +1048,9 @@
         );
       }
 
-      // ── Main render ──────────────────────────────────────────────────────
+      // ══════════════════════════════════════════════════════════════════
+      // MAIN RENDER
+      // ══════════════════════════════════════════════════════════════════
       if (loading) return null;
 
       return (
@@ -807,8 +1059,8 @@
             <div className="sk-eyebrow">✦ Aesu ✦</div>
             <div className="sk-title">My Korean Skincare</div>
             <div className="sk-tabs">
-              {[['products','Products'],['routines','Routines'],['aesu','Dear Aesu']].map(([id, lbl]) => (
-                <button key={id} className={`sk-tab ${tab === id ? 'on' : ''}`} onClick={() => setTab(id)}>{lbl}</button>
+              {[['products','Products'],['routines','Routines'],['aesu','Dear Aesu']].map(([id,lbl]) => (
+                <button key={id} className={`sk-tab ${tab===id?'on':''}`} onClick={() => setTab(id)}>{lbl}</button>
               ))}
             </div>
           </div>
@@ -828,6 +1080,13 @@
               <div className="spin" />
               <div className="spin-t">Analyzing your product…</div>
               <div className="spin-s">Claude is identifying category & ingredients ✨</div>
+            </div>
+          )}
+          {addingRoutine && (
+            <div className="spin-over">
+              <div className="spin" />
+              <div className="spin-t">Building your routine…</div>
+              <div className="spin-s">Saving all products & creating routine ✨</div>
             </div>
           )}
 
