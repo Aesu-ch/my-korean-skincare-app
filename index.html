@@ -1,0 +1,1699 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mon Bien-Être ✨</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+  :root {
+    --cream: #FAF6EF;
+    --cream-dark: #F0EAE0;
+    --rose: #C4899A;
+    --rose-light: #E8C4CE;
+    --rose-deep: #A06878;
+    --sage: #8FAF8F;
+    --sage-light: #C8DCC8;
+    --sage-dark: #5C825C;
+    --brown: #2C1A14;
+    --brown-mid: #7A5C52;
+    --brown-light: #B8968C;
+    --gold: #C8A96E;
+    --white: #FFFFFF;
+    --shadow: 0 2px 20px rgba(44,26,20,0.08);
+    --shadow-lg: 0 8px 40px rgba(44,26,20,0.12);
+    --radius: 16px;
+    --radius-sm: 10px;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--cream);
+    color: var(--brown);
+    min-height: 100vh;
+    max-width: 480px;
+    margin: 0 auto;
+    position: relative;
+    overflow-x: hidden;
+  }
+
+  /* HEADER */
+  .app-header {
+    background: var(--white);
+    padding: 20px 20px 16px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    border-bottom: 1px solid var(--cream-dark);
+    box-shadow: var(--shadow);
+  }
+  .header-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+  }
+  .app-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 26px;
+    font-weight: 600;
+    color: var(--brown);
+    line-height: 1;
+  }
+  .app-subtitle {
+    font-size: 12px;
+    color: var(--brown-light);
+    font-weight: 300;
+    margin-top: 2px;
+    letter-spacing: 0.05em;
+  }
+  .today-badge {
+    background: var(--rose);
+    color: white;
+    border-radius: 20px;
+    padding: 4px 12px;
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.03em;
+  }
+
+  /* BOTTOM NAV */
+  .bottom-nav {
+    position: fixed;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 100%;
+    max-width: 480px;
+    background: var(--white);
+    border-top: 1px solid var(--cream-dark);
+    display: flex;
+    z-index: 100;
+    box-shadow: 0 -4px 20px rgba(44,26,20,0.08);
+  }
+  .nav-btn {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 10px 4px 14px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    gap: 3px;
+    transition: all 0.2s;
+    color: var(--brown-light);
+    -webkit-tap-highlight-color: transparent;
+  }
+  .nav-btn.active { color: var(--rose-deep); }
+  .nav-btn .nav-icon { font-size: 22px; }
+  .nav-btn .nav-label { font-size: 9px; font-weight: 500; letter-spacing: 0.04em; text-transform: uppercase; }
+
+  /* MAIN CONTENT */
+  .main-content {
+    padding: 16px 16px 100px;
+  }
+
+  /* TABS */
+  .tab-panel { display: none; }
+  .tab-panel.active { display: block; }
+
+  /* CARDS */
+  .card {
+    background: var(--white);
+    border-radius: var(--radius);
+    padding: 20px;
+    margin-bottom: 14px;
+    box-shadow: var(--shadow);
+  }
+  .card-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--brown);
+    margin-bottom: 14px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .card-title .icon { font-size: 20px; }
+
+  /* FORM ELEMENTS */
+  .form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-bottom: 14px;
+  }
+  .form-group { display: flex; flex-direction: column; gap: 5px; }
+  .form-group.full { grid-column: 1 / -1; }
+  label {
+    font-size: 11px;
+    font-weight: 500;
+    color: var(--brown-mid);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+  }
+  input[type="time"],
+  input[type="number"],
+  input[type="text"],
+  input[type="date"],
+  textarea,
+  select {
+    border: 1.5px solid var(--cream-dark);
+    border-radius: var(--radius-sm);
+    padding: 10px 14px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 15px;
+    color: var(--brown);
+    background: var(--cream);
+    outline: none;
+    transition: border-color 0.2s;
+    width: 100%;
+  }
+  input:focus, textarea:focus, select:focus { border-color: var(--rose); background: white; }
+  textarea { resize: vertical; min-height: 70px; }
+
+  /* BUTTONS */
+  .btn {
+    border: none;
+    border-radius: var(--radius-sm);
+    padding: 12px 20px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .btn-primary {
+    background: var(--rose);
+    color: white;
+    width: 100%;
+    justify-content: center;
+  }
+  .btn-primary:active { background: var(--rose-deep); transform: scale(0.98); }
+  .btn-secondary {
+    background: var(--cream-dark);
+    color: var(--brown);
+  }
+  .btn-secondary:active { background: var(--rose-light); }
+  .btn-sage {
+    background: var(--sage);
+    color: white;
+  }
+  .btn-sm { padding: 7px 14px; font-size: 12px; }
+  .btn-icon {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 6px;
+    border-radius: 8px;
+    transition: background 0.2s;
+    font-size: 18px;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .btn-icon:hover { background: var(--cream-dark); }
+
+  /* SLEEP TAB */
+  .sleep-display {
+    text-align: center;
+    padding: 10px 0 14px;
+  }
+  .sleep-hours-big {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 56px;
+    font-weight: 300;
+    color: var(--rose-deep);
+    line-height: 1;
+  }
+  .sleep-hours-label {
+    font-size: 12px;
+    color: var(--brown-light);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    margin-top: 4px;
+  }
+  .night-breaks-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: var(--cream);
+    border-radius: var(--radius-sm);
+    padding: 12px 16px;
+    margin-bottom: 14px;
+  }
+  .night-breaks-label { font-size: 14px; color: var(--brown); }
+  .counter-ctrl {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .counter-btn {
+    width: 32px; height: 32px;
+    border-radius: 50%;
+    border: 2px solid var(--rose);
+    background: white;
+    color: var(--rose);
+    font-size: 18px;
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 600;
+    transition: all 0.15s;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .counter-btn:active { background: var(--rose); color: white; }
+  .counter-val { font-size: 20px; font-weight: 600; color: var(--brown); min-width: 24px; text-align: center; }
+
+  /* HYGIENE TAB */
+  .hygiene-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+  }
+  .hygiene-item {
+    background: var(--cream);
+    border: 2px solid var(--cream-dark);
+    border-radius: var(--radius-sm);
+    padding: 14px 12px;
+    cursor: pointer;
+    transition: all 0.2s;
+    text-align: center;
+    -webkit-tap-highlight-color: transparent;
+    user-select: none;
+  }
+  .hygiene-item.done {
+    background: var(--sage-light);
+    border-color: var(--sage);
+  }
+  .hygiene-item.poop.done {
+    background: #FFF3D6;
+    border-color: var(--gold);
+  }
+  .hygiene-emoji { font-size: 28px; margin-bottom: 6px; }
+  .hygiene-label { font-size: 12px; font-weight: 500; color: var(--brown-mid); }
+  .hygiene-item.done .hygiene-label { color: var(--sage-dark); font-weight: 600; }
+  .hygiene-item.poop.done .hygiene-label { color: #8B6914; }
+  .hygiene-score {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: var(--cream);
+    border-radius: var(--radius-sm);
+    padding: 12px 16px;
+    margin-top: 14px;
+  }
+  .score-bar-wrap { flex: 1; margin: 0 14px; height: 8px; background: var(--cream-dark); border-radius: 4px; overflow: hidden; }
+  .score-bar { height: 100%; background: var(--sage); border-radius: 4px; transition: width 0.4s ease; }
+  .score-text { font-size: 13px; font-weight: 600; color: var(--sage-dark); }
+
+  /* NUTRITION TAB */
+  .water-tracker {
+    text-align: center;
+    margin-bottom: 16px;
+  }
+  .water-amount {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 44px;
+    font-weight: 300;
+    color: #5B8DB8;
+  }
+  .water-goal { font-size: 12px; color: var(--brown-light); margin-bottom: 12px; }
+  .water-bar-wrap {
+    height: 10px;
+    background: #DDE9F5;
+    border-radius: 5px;
+    overflow: hidden;
+    margin-bottom: 14px;
+  }
+  .water-bar {
+    height: 100%;
+    background: linear-gradient(90deg, #7BB3D8, #5B8DB8);
+    border-radius: 5px;
+    transition: width 0.4s ease;
+  }
+  .water-btns {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    justify-content: center;
+    margin-bottom: 10px;
+  }
+  .water-btn {
+    background: #DDE9F5;
+    color: #3A6D96;
+    border: none;
+    border-radius: 20px;
+    padding: 8px 16px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .water-btn:active { background: #5B8DB8; color: white; }
+  .water-custom { display: flex; gap: 8px; }
+  .water-custom input { flex: 1; }
+
+  .meal-card {
+    border: 1.5px solid var(--cream-dark);
+    border-radius: var(--radius-sm);
+    overflow: hidden;
+    margin-bottom: 10px;
+  }
+  .meal-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 14px;
+    background: var(--cream);
+    cursor: pointer;
+  }
+  .meal-title { font-size: 13px; font-weight: 600; color: var(--brown); display: flex; align-items: center; gap: 6px; }
+  .meal-cal-badge {
+    background: var(--rose-light);
+    color: var(--rose-deep);
+    border-radius: 20px;
+    padding: 3px 10px;
+    font-size: 11px;
+    font-weight: 600;
+  }
+  .meal-body { padding: 12px 14px; background: white; }
+  .meal-row { display: flex; gap: 8px; margin-bottom: 8px; }
+  .meal-row textarea { margin-bottom: 0; }
+  .estimate-btn {
+    background: var(--rose-light);
+    color: var(--rose-deep);
+    border: none;
+    border-radius: var(--radius-sm);
+    padding: 10px 14px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 12px;
+    font-weight: 500;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: all 0.2s;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .estimate-btn:active { background: var(--rose); color: white; }
+  .estimate-btn.loading { opacity: 0.6; cursor: default; }
+
+  .total-cal-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: var(--cream);
+    border-radius: var(--radius-sm);
+    padding: 14px 16px;
+    margin-top: 14px;
+  }
+  .total-cal-label { font-size: 13px; color: var(--brown-mid); }
+  .total-cal-val { font-family: 'Cormorant Garamond', serif; font-size: 30px; font-weight: 600; color: var(--rose-deep); }
+
+  /* APPOINTMENTS TAB */
+  .apt-item {
+    background: var(--white);
+    border: 1.5px solid var(--cream-dark);
+    border-radius: var(--radius-sm);
+    padding: 14px 16px;
+    margin-bottom: 10px;
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    position: relative;
+  }
+  .apt-date-block {
+    background: var(--rose-light);
+    border-radius: 10px;
+    padding: 6px 10px;
+    text-align: center;
+    min-width: 46px;
+    flex-shrink: 0;
+  }
+  .apt-day { font-family: 'Cormorant Garamond', serif; font-size: 24px; font-weight: 600; color: var(--rose-deep); line-height: 1; }
+  .apt-month { font-size: 10px; font-weight: 600; color: var(--rose-deep); text-transform: uppercase; letter-spacing: 0.05em; }
+  .apt-info { flex: 1; }
+  .apt-name { font-size: 15px; font-weight: 600; color: var(--brown); }
+  .apt-doctor { font-size: 12px; color: var(--brown-mid); margin-top: 2px; }
+  .apt-time { font-size: 12px; color: var(--rose); font-weight: 500; margin-top: 4px; }
+  .apt-notes { font-size: 12px; color: var(--brown-light); margin-top: 4px; font-style: italic; }
+  .apt-actions { display: flex; gap: 4px; }
+  .apt-upcoming { border-left: 3px solid var(--sage); }
+  .apt-today { border-left: 3px solid var(--rose); background: #FFF8F9; }
+  .apt-soon { border-left: 3px solid var(--gold); }
+  .section-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 12px;
+    margin-top: 4px;
+  }
+  .section-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 17px;
+    font-weight: 600;
+    color: var(--brown-mid);
+  }
+  .archive-toggle {
+    background: none;
+    border: none;
+    font-size: 12px;
+    color: var(--brown-light);
+    cursor: pointer;
+    font-family: 'DM Sans', sans-serif;
+    text-decoration: underline;
+  }
+
+  /* OVERVIEW TAB */
+  .overview-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 6px;
+    margin-bottom: 16px;
+  }
+  .day-col {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 5px;
+  }
+  .day-label {
+    font-size: 9px;
+    font-weight: 600;
+    color: var(--brown-light);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+  }
+  .day-label.today-label { color: var(--rose); }
+  .day-dot {
+    width: 28px; height: 28px;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 10px;
+    font-weight: 600;
+    background: var(--cream-dark);
+    color: var(--brown-light);
+  }
+  .day-dot.filled { background: var(--sage-light); color: var(--sage-dark); }
+  .day-dot.today-dot { border: 2px solid var(--rose); }
+  .day-dot.poop-yes { background: #FFF3D6; }
+  .day-dot.poop-no { background: #FFE5E5; }
+
+  .overview-metric {
+    background: var(--white);
+    border-radius: var(--radius-sm);
+    padding: 14px 16px;
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    box-shadow: var(--shadow);
+  }
+  .metric-icon { font-size: 28px; }
+  .metric-info { flex: 1; }
+  .metric-label { font-size: 11px; color: var(--brown-light); text-transform: uppercase; letter-spacing: 0.06em; }
+  .metric-val { font-family: 'Cormorant Garamond', serif; font-size: 26px; font-weight: 600; color: var(--brown); }
+  .metric-sub { font-size: 11px; color: var(--brown-light); }
+
+  .poop-streak-card {
+    background: linear-gradient(135deg, #FFF8E7, #FFF3D6);
+    border: 2px solid var(--gold);
+    border-radius: var(--radius);
+    padding: 16px 20px;
+    text-align: center;
+    margin-bottom: 14px;
+  }
+  .streak-num { font-family: 'Cormorant Garamond', serif; font-size: 52px; font-weight: 300; color: #8B6914; line-height: 1; }
+  .streak-label { font-size: 12px; color: #8B6914; letter-spacing: 0.05em; text-transform: uppercase; margin-top: 4px; }
+
+  /* MODAL */
+  .modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(44,26,20,0.5);
+    z-index: 200;
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s;
+  }
+  .modal-overlay.open { opacity: 1; pointer-events: all; }
+  .modal {
+    background: var(--white);
+    border-radius: 20px 20px 0 0;
+    padding: 24px 20px 36px;
+    width: 100%;
+    max-width: 480px;
+    max-height: 90vh;
+    overflow-y: auto;
+    transform: translateY(100%);
+    transition: transform 0.3s ease;
+  }
+  .modal-overlay.open .modal { transform: translateY(0); }
+  .modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+  }
+  .modal-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 22px;
+    font-weight: 600;
+  }
+
+  /* TOAST */
+  .toast {
+    position: fixed;
+    bottom: 90px;
+    left: 50%;
+    transform: translateX(-50%) translateY(20px);
+    background: var(--brown);
+    color: white;
+    border-radius: 20px;
+    padding: 10px 20px;
+    font-size: 13px;
+    font-weight: 500;
+    z-index: 300;
+    opacity: 0;
+    transition: all 0.3s;
+    pointer-events: none;
+    white-space: nowrap;
+  }
+  .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+  /* UTILS */
+  .divider { height: 1px; background: var(--cream-dark); margin: 14px 0; }
+  .text-center { text-align: center; }
+  .text-muted { color: var(--brown-light); font-size: 13px; }
+  .mt-8 { margin-top: 8px; }
+  .mt-14 { margin-top: 14px; }
+  .empty-state { text-align: center; padding: 30px 0; color: var(--brown-light); font-size: 14px; }
+  .empty-icon { font-size: 36px; margin-bottom: 8px; }
+
+  .spinner {
+    display: inline-block;
+    width: 14px; height: 14px;
+    border: 2px solid var(--rose-light);
+    border-top-color: var(--rose);
+    border-radius: 50%;
+    animation: spin 0.7s linear infinite;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  .config-warning {
+    background: #FFF3D6;
+    border: 1.5px solid var(--gold);
+    border-radius: var(--radius-sm);
+    padding: 12px 16px;
+    font-size: 12px;
+    color: #7A5C00;
+    margin-bottom: 14px;
+  }
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<div class="app-header">
+  <div class="header-top">
+    <div>
+      <div class="app-title">Mon Bien-Être</div>
+      <div class="app-subtitle" id="header-date">Chargement…</div>
+    </div>
+    <div class="today-badge" id="header-badge">✨ Aujourd'hui</div>
+  </div>
+</div>
+
+<!-- MAIN -->
+<div class="main-content">
+
+  <!-- SLEEP TAB -->
+  <div class="tab-panel" id="tab-sleep">
+    <div class="card">
+      <div class="card-title"><span class="icon">🌙</span> Sommeil</div>
+
+      <div class="sleep-display">
+        <div class="sleep-hours-big" id="sleep-hours-display">—</div>
+        <div class="sleep-hours-label">heures de sommeil</div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label>Coucher</label>
+          <input type="time" id="sleep-bedtime" value="22:30">
+        </div>
+        <div class="form-group">
+          <label>Réveil</label>
+          <input type="time" id="sleep-waketime" value="07:00">
+        </div>
+      </div>
+
+      <div class="night-breaks-row">
+        <div class="night-breaks-label">🍼 Réveils pour bébé</div>
+        <div class="counter-ctrl">
+          <button class="counter-btn" onclick="changeBreaks(-1)">−</button>
+          <div class="counter-val" id="breaks-val">0</div>
+          <button class="counter-btn" onclick="changeBreaks(1)">+</button>
+        </div>
+      </div>
+
+      <div class="night-breaks-row" style="margin-top:-4px">
+        <div class="night-breaks-label">⏱️ Temps éveillée (bébé)</div>
+        <div style="display:flex;align-items:center;gap:8px">
+          <input type="number" id="baby-awake-min" min="0" max="300" placeholder="0"
+            style="width:70px;text-align:center;padding:8px 10px;font-size:15px"
+            oninput="updateSleepDisplay()">
+          <span style="font-size:13px;color:var(--brown-light)">min</span>
+        </div>
+      </div>
+
+      <div id="sleep-net-info" style="display:none;background:var(--rose-light);border-radius:var(--radius-sm);padding:10px 14px;margin-bottom:14px;font-size:13px;color:var(--rose-deep);text-align:center"></div>
+
+      <div class="form-group">
+        <label>Notes (optionnel)</label>
+        <textarea id="sleep-notes" placeholder="Ex: difficile de me rendormir après le réveil de 2h…" rows="2"></textarea>
+      </div>
+
+      <div class="mt-14">
+        <button class="btn btn-primary" onclick="saveSleep()">💾 Enregistrer le sommeil</button>
+      </div>
+    </div>
+
+    <div class="card" id="sleep-history-card" style="display:none">
+      <div class="card-title"><span class="icon">📈</span> Derniers 7 jours</div>
+      <div id="sleep-history-list"></div>
+    </div>
+  </div>
+
+  <!-- HYGIENE TAB -->
+  <div class="tab-panel active" id="tab-hygiene">
+    <div class="card">
+      <div class="card-title"><span class="icon">🫧</span> Hygiène & Routine</div>
+
+      <div class="hygiene-grid" id="hygiene-grid">
+        <div class="hygiene-item" data-key="teeth_am" onclick="toggleHygiene(this)">
+          <div class="hygiene-emoji">🦷</div>
+          <div class="hygiene-label">Dents matin</div>
+        </div>
+        <div class="hygiene-item" data-key="teeth_pm" onclick="toggleHygiene(this)">
+          <div class="hygiene-emoji">🪥</div>
+          <div class="hygiene-label">Dents soir</div>
+        </div>
+        <div class="hygiene-item" data-key="skincare_am" onclick="toggleHygiene(this)">
+          <div class="hygiene-emoji">🌸</div>
+          <div class="hygiene-label">Skincare matin</div>
+        </div>
+        <div class="hygiene-item" data-key="skincare_pm" onclick="toggleHygiene(this)">
+          <div class="hygiene-emoji">🌙</div>
+          <div class="hygiene-label">Skincare soir</div>
+        </div>
+        <div class="hygiene-item" data-key="showered" onclick="toggleHygiene(this)">
+          <div class="hygiene-emoji">🚿</div>
+          <div class="hygiene-label">Douche</div>
+        </div>
+        <div class="hygiene-item" data-key="washed_hair" onclick="toggleHygiene(this)">
+          <div class="hygiene-emoji">💆‍♀️</div>
+          <div class="hygiene-label">Shampoing</div>
+        </div>
+        <div class="hygiene-item poop" data-key="pooped" onclick="toggleHygiene(this)" style="grid-column: 1 / -1;">
+          <div class="hygiene-emoji">💩</div>
+          <div class="hygiene-label">Caca du jour</div>
+        </div>
+      </div>
+
+      <div class="hygiene-score">
+        <span style="font-size:13px; color:var(--brown-mid);">Score du jour</span>
+        <div class="score-bar-wrap">
+          <div class="score-bar" id="hygiene-score-bar" style="width:0%"></div>
+        </div>
+        <span class="score-text" id="hygiene-score-text">0/7</span>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title"><span class="icon">📅</span> Suivi 7 jours — Hygiène</div>
+      <div id="hygiene-7day"></div>
+    </div>
+  </div>
+
+  <!-- NUTRITION TAB -->
+  <div class="tab-panel" id="tab-nutrition">
+    <div class="card">
+      <div class="card-title"><span class="icon">💧</span> Hydratation</div>
+      <div class="water-tracker">
+        <div class="water-amount"><span id="water-ml">0</span> <span style="font-size:18px; color:var(--brown-light)">ml</span></div>
+        <div class="water-goal">Objectif : 2000 ml</div>
+        <div class="water-bar-wrap">
+          <div class="water-bar" id="water-bar" style="width:0%"></div>
+        </div>
+        <div class="water-btns">
+          <button class="water-btn" onclick="addWater(150)">☕ 150ml</button>
+          <button class="water-btn" onclick="addWater(200)">🥛 200ml</button>
+          <button class="water-btn" onclick="addWater(250)">💧 250ml</button>
+          <button class="water-btn" onclick="addWater(500)">🫙 500ml</button>
+        </div>
+        <div class="water-custom">
+          <input type="number" id="water-custom-input" placeholder="ml personnalisé" min="0" max="2000">
+          <button class="btn btn-secondary btn-sm" onclick="addCustomWater()">+ Ajouter</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title"><span class="icon">🍽️</span> Repas du jour</div>
+
+      <div class="meal-card" id="meal-breakfast">
+        <div class="meal-header" onclick="toggleMeal('breakfast')">
+          <div class="meal-title">🌅 Petit-déjeuner</div>
+          <div class="meal-cal-badge" id="cal-breakfast">— kcal</div>
+        </div>
+        <div class="meal-body" id="body-breakfast" style="display:none">
+          <div class="form-group" style="margin-bottom:8px">
+            <textarea id="food-breakfast" placeholder="Ex: 2 toasts avec avocat, 1 café au lait, 1 kiwi…" rows="2"></textarea>
+          </div>
+          <div style="display:flex; gap:8px">
+            <input type="number" id="cal-input-breakfast" placeholder="kcal" style="width:90px; flex-shrink:0">
+            <button class="estimate-btn" onclick="estimateCal('breakfast')">✨ Estimer les calories</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="meal-card" id="meal-lunch">
+        <div class="meal-header" onclick="toggleMeal('lunch')">
+          <div class="meal-title">☀️ Déjeuner</div>
+          <div class="meal-cal-badge" id="cal-lunch">— kcal</div>
+        </div>
+        <div class="meal-body" id="body-lunch" style="display:none">
+          <div class="form-group" style="margin-bottom:8px">
+            <textarea id="food-lunch" placeholder="Ex: salade de quinoa, poulet grillé, sauce tahini…" rows="2"></textarea>
+          </div>
+          <div style="display:flex; gap:8px">
+            <input type="number" id="cal-input-lunch" placeholder="kcal" style="width:90px; flex-shrink:0">
+            <button class="estimate-btn" onclick="estimateCal('lunch')">✨ Estimer les calories</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="meal-card" id="meal-dinner">
+        <div class="meal-header" onclick="toggleMeal('dinner')">
+          <div class="meal-title">🌙 Dîner</div>
+          <div class="meal-cal-badge" id="cal-dinner">— kcal</div>
+        </div>
+        <div class="meal-body" id="body-dinner" style="display:none">
+          <div class="form-group" style="margin-bottom:8px">
+            <textarea id="food-dinner" placeholder="Ex: saumon au four, riz basmati, épinards sautés…" rows="2"></textarea>
+          </div>
+          <div style="display:flex; gap:8px">
+            <input type="number" id="cal-input-dinner" placeholder="kcal" style="width:90px; flex-shrink:0">
+            <button class="estimate-btn" onclick="estimateCal('dinner')">✨ Estimer les calories</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="meal-card" id="meal-snacks">
+        <div class="meal-header" onclick="toggleMeal('snacks')">
+          <div class="meal-title">🍪 Collations</div>
+          <div class="meal-cal-badge" id="cal-snacks">— kcal</div>
+        </div>
+        <div class="meal-body" id="body-snacks" style="display:none">
+          <div class="form-group" style="margin-bottom:8px">
+            <textarea id="food-snacks" placeholder="Ex: 1 poignée d'amandes, 1 carré de chocolat noir…" rows="2"></textarea>
+          </div>
+          <div style="display:flex; gap:8px">
+            <input type="number" id="cal-input-snacks" placeholder="kcal" style="width:90px; flex-shrink:0">
+            <button class="estimate-btn" onclick="estimateCal('snacks')">✨ Estimer les calories</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="total-cal-row">
+        <div>
+          <div class="total-cal-label">Total calories</div>
+          <div class="total-cal-val" id="total-calories">0 <span style="font-size:14px; font-family:DM Sans; color:var(--brown-light)">kcal</span></div>
+        </div>
+        <div style="font-size:28px">🍽️</div>
+      </div>
+
+      <div class="mt-14">
+        <button class="btn btn-primary" onclick="saveDiet()">💾 Enregistrer la nutrition</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- APPOINTMENTS TAB -->
+  <div class="tab-panel" id="tab-appointments">
+    <div class="section-header">
+      <div class="section-title">Prochains rendez-vous</div>
+      <button class="btn btn-primary btn-sm" onclick="openAptModal()">+ Ajouter</button>
+    </div>
+
+    <div id="upcoming-apts"></div>
+
+    <div class="section-header mt-14">
+      <div class="section-title" style="color:var(--brown-light)">Archives</div>
+      <button class="archive-toggle" onclick="toggleArchives()">Voir / Cacher</button>
+    </div>
+    <div id="archived-apts" style="display:none"></div>
+  </div>
+
+  <!-- OVERVIEW TAB -->
+  <div class="tab-panel" id="tab-overview">
+    <div class="card">
+      <div class="card-title"><span class="icon">📊</span> Vue 7 jours</div>
+      <div class="overview-grid" id="overview-7day-labels"></div>
+
+      <div class="divider"></div>
+
+      <div class="overview-metric">
+        <div class="metric-icon">🌙</div>
+        <div class="metric-info">
+          <div class="metric-label">Sommeil moyen</div>
+          <div class="metric-val" id="avg-sleep">—</div>
+          <div class="metric-sub">sur 7 jours</div>
+        </div>
+      </div>
+      <div class="overview-metric">
+        <div class="metric-icon">💧</div>
+        <div class="metric-info">
+          <div class="metric-label">Eau moyenne</div>
+          <div class="metric-val" id="avg-water">—</div>
+          <div class="metric-sub">ml par jour</div>
+        </div>
+      </div>
+      <div class="overview-metric">
+        <div class="metric-icon">🫧</div>
+        <div class="metric-info">
+          <div class="metric-label">Hygiène moyenne</div>
+          <div class="metric-val" id="avg-hygiene">—</div>
+          <div class="metric-sub">items / jour sur 7</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title"><span class="icon">💩</span> Poop Tracker</div>
+      <div class="poop-streak-card">
+        <div class="streak-num" id="poop-streak">—</div>
+        <div class="streak-label">jours consécutifs ✓</div>
+      </div>
+      <div class="overview-grid" id="poop-grid"></div>
+    </div>
+  </div>
+
+</div>
+
+<!-- BOTTOM NAV -->
+<nav class="bottom-nav">
+  <button class="nav-btn" onclick="switchTab('sleep', this)">
+    <span class="nav-icon">🌙</span>
+    <span class="nav-label">Sommeil</span>
+  </button>
+  <button class="nav-btn active" onclick="switchTab('hygiene', this)">
+    <span class="nav-icon">🫧</span>
+    <span class="nav-label">Hygiène</span>
+  </button>
+  <button class="nav-btn" onclick="switchTab('nutrition', this)">
+    <span class="nav-icon">🥗</span>
+    <span class="nav-label">Nutrition</span>
+  </button>
+  <button class="nav-btn" onclick="switchTab('appointments', this)">
+    <span class="nav-icon">📅</span>
+    <span class="nav-label">RDV</span>
+  </button>
+  <button class="nav-btn" onclick="switchTab('overview', this)">
+    <span class="nav-icon">📊</span>
+    <span class="nav-label">Aperçu</span>
+  </button>
+</nav>
+
+<!-- APPOINTMENT MODAL -->
+<div class="modal-overlay" id="apt-modal-overlay" onclick="closeAptModal(event)">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title" id="apt-modal-title">Nouveau rendez-vous</div>
+      <button class="btn-icon" onclick="closeAptModal()">✕</button>
+    </div>
+    <input type="hidden" id="apt-edit-id">
+    <div class="form-group" style="margin-bottom:12px">
+      <label>Titre *</label>
+      <input type="text" id="apt-title" placeholder="Ex: Gynécologue, Pédiatre…">
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label>Date *</label>
+        <input type="date" id="apt-date">
+      </div>
+      <div class="form-group">
+        <label>Heure</label>
+        <input type="time" id="apt-time">
+      </div>
+    </div>
+    <div class="form-group" style="margin-bottom:12px">
+      <label>Médecin / Spécialiste</label>
+      <input type="text" id="apt-doctor" placeholder="Ex: Dr. Martin">
+    </div>
+    <div class="form-group" style="margin-bottom:12px">
+      <label>Lieu</label>
+      <input type="text" id="apt-location" placeholder="Ex: Hôpital cantonal, Rue de Rive 10">
+    </div>
+    <div class="form-group" style="margin-bottom:20px">
+      <label>Notes</label>
+      <textarea id="apt-notes" placeholder="Rappels, questions à poser…" rows="2"></textarea>
+    </div>
+    <button class="btn btn-primary" onclick="saveAppointment()">💾 Enregistrer</button>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<script>
+// ============================================================
+// CONFIG — Remplacer par vos vraies valeurs Supabase
+// ============================================================
+const SUPABASE_URL = 'https://tclsndvassbosributcj.supabase.co';
+const SUPABASE_KEY = 'sb_publishable_IuaOUqFtitxNZEvbUn7SOw_kO3RkdMe';
+// Pour les estimations de calories via l'API Claude
+// Créer un Cloudflare Worker proxy et mettre l'URL ici
+const CLAUDE_API_URL = 'https://quiet-scene-a7e6.naomi-c-lovera.workers.dev';
+// ============================================================
+
+let sb = null;
+let TODAY = getTodayStr();
+
+function getTodayStr() {
+  return new Date().toISOString().split('T')[0];
+}
+
+function initSupabase() {
+  if (SUPABASE_URL === 'VOTRE_SUPABASE_URL') return;
+  try {
+    sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+  } catch(e) { console.warn('Supabase init failed', e); }
+}
+
+// ============================================================
+// NAVIGATION
+// ============================================================
+function switchTab(tab, btn) {
+  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('tab-' + tab).classList.add('active');
+  btn.classList.add('active');
+
+  if (tab === 'overview') loadOverview();
+  if (tab === 'appointments') loadAppointments();
+  if (tab === 'hygiene') loadHygiene7Day();
+}
+
+// ============================================================
+// HEADER
+// ============================================================
+function initHeader() {
+  const days = ['Dimanche','Lundi','Mardi','Mercredi','Jeudi','Vendredi','Samedi'];
+  const months = ['janvier','février','mars','avril','mai','juin','juillet','août','septembre','octobre','novembre','décembre'];
+  const now = new Date();
+  document.getElementById('header-date').textContent =
+    days[now.getDay()] + ' ' + now.getDate() + ' ' + months[now.getMonth()] + ' ' + now.getFullYear();
+}
+
+// ============================================================
+// TOAST
+// ============================================================
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2500);
+}
+
+// ============================================================
+// SLEEP
+// ============================================================
+let nightBreaks = 0;
+
+function changeBreaks(delta) {
+  nightBreaks = Math.max(0, nightBreaks + delta);
+  document.getElementById('breaks-val').textContent = nightBreaks;
+}
+
+function calcSleepHours() {
+  const bed = document.getElementById('sleep-bedtime').value;
+  const wake = document.getElementById('sleep-waketime').value;
+  if (!bed || !wake) return null;
+  const [bh, bm] = bed.split(':').map(Number);
+  const [wh, wm] = wake.split(':').map(Number);
+  let minutes = (wh * 60 + wm) - (bh * 60 + bm);
+  if (minutes < 0) minutes += 24 * 60;
+  return minutes; // raw minutes in bed
+}
+
+document.getElementById('sleep-bedtime').addEventListener('input', updateSleepDisplay);
+document.getElementById('sleep-waketime').addEventListener('input', updateSleepDisplay);
+
+function updateSleepDisplay() {
+  const rawMin = calcSleepHours();
+  if (!rawMin) {
+    document.getElementById('sleep-hours-display').textContent = '—';
+    document.getElementById('sleep-net-info').style.display = 'none';
+    return;
+  }
+  const babyMin = parseInt(document.getElementById('baby-awake-min').value) || 0;
+  const netMin = Math.max(0, rawMin - babyMin);
+  const netHours = (netMin / 60).toFixed(1);
+  document.getElementById('sleep-hours-display').textContent = netHours + 'h';
+
+  const netInfo = document.getElementById('sleep-net-info');
+  if (babyMin > 0) {
+    const grossHours = (rawMin / 60).toFixed(1);
+    netInfo.style.display = 'block';
+    netInfo.innerHTML = `🛏️ Au lit <strong>${grossHours}h</strong> − ⏱️ éveillée <strong>${babyMin} min</strong> = 😴 <strong>${netHours}h</strong> de vrai sommeil`;
+  } else {
+    netInfo.style.display = 'none';
+  }
+}
+
+async function saveSleep() {
+  const rawMin = calcSleepHours();
+  if (!rawMin) { showToast('⚠️ Renseigne les heures de coucher et réveil'); return; }
+  const babyMin = parseInt(document.getElementById('baby-awake-min').value) || 0;
+  const netMin = Math.max(0, rawMin - babyMin);
+
+  const data = {
+    date: TODAY,
+    bedtime: document.getElementById('sleep-bedtime').value,
+    wake_time: document.getElementById('sleep-waketime').value,
+    hours_slept: parseFloat((netMin / 60).toFixed(1)),
+    baby_awake_min: babyMin,
+    night_breaks: nightBreaks,
+    notes: document.getElementById('sleep-notes').value
+  };
+
+  if (sb) {
+    const { error } = await sb.from('selfcare_sleep').upsert(data, { onConflict: 'date' });
+    if (error) { showToast('❌ Erreur: ' + error.message); return; }
+  } else {
+    saveLocal('sleep_' + TODAY, data);
+  }
+  showToast('🌙 Sommeil enregistré !');
+  loadSleepHistory();
+}
+
+async function loadSleepHistory() {
+  let rows = [];
+  if (sb) {
+    const { data } = await sb.from('selfcare_sleep')
+      .select('*').order('date', { ascending: false }).limit(7);
+    rows = data || [];
+  } else {
+    for (let i = 0; i < 7; i++) {
+      const d = offsetDate(TODAY, -i);
+      const r = loadLocal('sleep_' + d);
+      if (r) rows.push(r);
+    }
+  }
+
+  // Load today into form
+  const todayRow = rows.find(r => r.date === TODAY);
+  if (todayRow) {
+    if (todayRow.bedtime) document.getElementById('sleep-bedtime').value = todayRow.bedtime;
+    if (todayRow.wake_time) document.getElementById('sleep-waketime').value = todayRow.wake_time;
+    nightBreaks = todayRow.night_breaks || 0;
+    document.getElementById('breaks-val').textContent = nightBreaks;
+    document.getElementById('baby-awake-min').value = todayRow.baby_awake_min || '';
+    document.getElementById('sleep-notes').value = todayRow.notes || '';
+    updateSleepDisplay();
+  }
+
+  if (rows.length === 0) return;
+  const card = document.getElementById('sleep-history-card');
+  card.style.display = 'block';
+  const list = document.getElementById('sleep-history-list');
+  list.innerHTML = rows.map(r => {
+    const label = r.date === TODAY ? 'Aujourd\'hui' : formatDateLabel(r.date);
+    const babyStr = r.baby_awake_min > 0 ? `<span style="font-size:11px;color:var(--rose);margin-left:4px">(−${r.baby_awake_min}min bébé)</span>` : '';
+    return `<div style="display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid var(--cream-dark)">
+      <span style="font-size:13px;color:var(--brown-mid)">${label}</span>
+      <span style="font-size:15px;font-weight:600;color:var(--rose-deep)">${r.hours_slept}h${babyStr}</span>
+      <span style="font-size:12px;color:var(--brown-light)">${r.night_breaks} réveil${r.night_breaks !== 1 ? 's' : ''}</span>
+    </div>`;
+  }).join('');
+}
+
+// ============================================================
+// HYGIENE
+// ============================================================
+let hygieneState = {
+  teeth_am: false, teeth_pm: false,
+  skincare_am: false, skincare_pm: false,
+  showered: false, washed_hair: false,
+  pooped: false
+};
+
+async function toggleHygiene(el) {
+  const key = el.dataset.key;
+  hygieneState[key] = !hygieneState[key];
+  el.classList.toggle('done', hygieneState[key]);
+  updateHygieneScore();
+  await saveHygiene();
+}
+
+function updateHygieneScore() {
+  const total = Object.keys(hygieneState).length;
+  const done = Object.values(hygieneState).filter(Boolean).length;
+  const pct = (done / total) * 100;
+  document.getElementById('hygiene-score-bar').style.width = pct + '%';
+  document.getElementById('hygiene-score-text').textContent = done + '/' + total;
+}
+
+async function saveHygiene() {
+  const data = { date: TODAY, ...hygieneState };
+  if (sb) {
+    await sb.from('selfcare_hygiene').upsert(data, { onConflict: 'date' });
+  } else {
+    saveLocal('hygiene_' + TODAY, data);
+  }
+}
+
+async function loadHygiene() {
+  let row = null;
+  if (sb) {
+    const { data } = await sb.from('selfcare_hygiene').select('*').eq('date', TODAY).single();
+    row = data;
+  } else {
+    row = loadLocal('hygiene_' + TODAY);
+  }
+  if (row) {
+    Object.keys(hygieneState).forEach(k => {
+      hygieneState[k] = !!row[k];
+    });
+    document.querySelectorAll('.hygiene-item').forEach(el => {
+      const key = el.dataset.key;
+      el.classList.toggle('done', !!hygieneState[key]);
+    });
+    updateHygieneScore();
+  }
+}
+
+async function loadHygiene7Day() {
+  const days = [];
+  for (let i = 6; i >= 0; i--) days.push(offsetDate(TODAY, -i));
+
+  let rows = [];
+  if (sb) {
+    const { data } = await sb.from('selfcare_hygiene')
+      .select('*').in('date', days);
+    rows = data || [];
+  } else {
+    rows = days.map(d => loadLocal('hygiene_' + d)).filter(Boolean);
+  }
+
+  const byDate = {};
+  rows.forEach(r => byDate[r.date] = r);
+
+  const keys = ['teeth_am','teeth_pm','skincare_am','skincare_pm','showered','washed_hair','pooped'];
+  const labels = ['🦷AM','🪥PM','🌸AM','🌙PM','🚿','💆','💩'];
+
+  const container = document.getElementById('hygiene-7day');
+  const dayLabels = ['L','M','M','J','V','S','D'];
+  const dowMap = {0:'D',1:'L',2:'M',3:'M',4:'J',5:'V',6:'S'};
+
+  container.innerHTML = `
+    <div style="overflow-x:auto">
+      <table style="width:100%;border-collapse:collapse;font-size:11px">
+        <thead>
+          <tr>
+            <th style="text-align:left;padding:4px 6px;color:var(--brown-light)"></th>
+            ${days.map(d => {
+              const isToday = d === TODAY;
+              const dow = dowMap[new Date(d + 'T12:00:00').getDay()];
+              return `<th style="text-align:center;padding:4px;color:${isToday ? 'var(--rose)' : 'var(--brown-light)'};font-weight:${isToday ? 700 : 400}">${dow}<br><span style="font-size:9px">${d.slice(8)}</span></th>`;
+            }).join('')}
+          </tr>
+        </thead>
+        <tbody>
+          ${keys.map((k, i) => `
+            <tr>
+              <td style="padding:5px 6px;color:var(--brown-mid);font-size:14px">${labels[i]}</td>
+              ${days.map(d => {
+                const row = byDate[d];
+                const done = row && row[k];
+                const bg = done ? (k === 'pooped' ? '#FFF3D6' : 'var(--sage-light)') : 'var(--cream-dark)';
+                return `<td style="text-align:center;padding:5px 4px"><div style="width:22px;height:22px;border-radius:50%;background:${bg};margin:auto;display:flex;align-items:center;justify-content:center;font-size:10px">${done ? '✓' : ''}</div></td>`;
+              }).join('')}
+            </tr>
+          `).join('')}
+        </tbody>
+      </table>
+    </div>
+  `;
+}
+
+// ============================================================
+// NUTRITION
+// ============================================================
+let waterMl = 0;
+let mealData = { breakfast: {text:'',cal:null}, lunch: {text:'',cal:null}, dinner: {text:'',cal:null}, snacks: {text:'',cal:null} };
+
+function addWater(ml) {
+  waterMl = Math.min(waterMl + ml, 5000);
+  updateWaterDisplay();
+  saveDietDebounced();
+}
+
+function addCustomWater() {
+  const v = parseInt(document.getElementById('water-custom-input').value) || 0;
+  if (v > 0) {
+    waterMl = Math.min(waterMl + v, 5000);
+    updateWaterDisplay();
+    document.getElementById('water-custom-input').value = '';
+    saveDietDebounced();
+  }
+}
+
+function updateWaterDisplay() {
+  document.getElementById('water-ml').textContent = waterMl;
+  const pct = Math.min((waterMl / 2000) * 100, 100);
+  document.getElementById('water-bar').style.width = pct + '%';
+}
+
+function toggleMeal(name) {
+  const body = document.getElementById('body-' + name);
+  body.style.display = body.style.display === 'none' ? 'block' : 'none';
+}
+
+async function estimateCal(meal) {
+  const text = document.getElementById('food-' + meal).value.trim();
+  if (!text) { showToast('⚠️ Décris d\'abord le repas'); return; }
+
+  const btn = document.querySelector(`#meal-${meal} .estimate-btn`);
+  btn.innerHTML = '<span class="spinner"></span> Estimation…';
+  btn.classList.add('loading');
+
+  try {
+    const res = await fetch(CLAUDE_API_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'anthropic-version': '2023-06-01' },
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-20250514',
+        max_tokens: 200,
+        system: 'Tu es un nutritionniste. L\'utilisateur décrit un repas. Réponds UNIQUEMENT avec un JSON: {"calories": <nombre entier>, "explication": "<1 phrase courte>"}. Pas de texte avant ou après.',
+        messages: [{ role: 'user', content: 'Estime les calories de ce repas: ' + text }]
+      })
+    });
+    const d = await res.json();
+    const txt = d.content?.[0]?.text || '';
+    const json = JSON.parse(txt.replace(/```json|```/g,'').trim());
+    const cal = json.calories;
+    document.getElementById('cal-input-' + meal).value = cal;
+    mealData[meal].cal = cal;
+    mealData[meal].text = text;
+    document.getElementById('cal-' + meal).textContent = cal + ' kcal';
+    updateTotalCal();
+    showToast('✨ ' + json.explication);
+    saveDietDebounced();
+  } catch(e) {
+    showToast('❌ Erreur estimation. Configure l\'API Claude.');
+    console.error(e);
+  } finally {
+    btn.innerHTML = '✨ Estimer les calories';
+    btn.classList.remove('loading');
+  }
+}
+
+function updateTotalCal() {
+  const meals = ['breakfast','lunch','dinner','snacks'];
+  let total = 0;
+  meals.forEach(m => {
+    const v = parseInt(document.getElementById('cal-input-' + m).value) || 0;
+    total += v;
+    if (v > 0) document.getElementById('cal-' + m).textContent = v + ' kcal';
+  });
+  document.getElementById('total-calories').innerHTML = total + ' <span style="font-size:14px;font-family:DM Sans;color:var(--brown-light)">kcal</span>';
+}
+
+// Wire up cal inputs
+['breakfast','lunch','dinner','snacks'].forEach(m => {
+  document.getElementById('cal-input-' + m).addEventListener('input', () => {
+    updateTotalCal();
+    mealData[m].cal = parseInt(document.getElementById('cal-input-' + m).value) || null;
+    document.getElementById('cal-' + m).textContent = (mealData[m].cal || '—') + ' kcal';
+  });
+  document.getElementById('food-' + m).addEventListener('blur', () => {
+    mealData[m].text = document.getElementById('food-' + m).value;
+  });
+});
+
+let dietSaveTimer = null;
+function saveDietDebounced() {
+  clearTimeout(dietSaveTimer);
+  dietSaveTimer = setTimeout(saveDiet, 1500);
+}
+
+async function saveDiet() {
+  const data = {
+    date: TODAY,
+    water_ml: waterMl,
+    breakfast: document.getElementById('food-breakfast').value,
+    breakfast_cal: parseInt(document.getElementById('cal-input-breakfast').value) || null,
+    lunch: document.getElementById('food-lunch').value,
+    lunch_cal: parseInt(document.getElementById('cal-input-lunch').value) || null,
+    dinner: document.getElementById('food-dinner').value,
+    dinner_cal: parseInt(document.getElementById('cal-input-dinner').value) || null,
+    snacks: document.getElementById('food-snacks').value,
+    snacks_cal: parseInt(document.getElementById('cal-input-snacks').value) || null,
+  };
+  if (sb) {
+    const { error } = await sb.from('selfcare_diet').upsert(data, { onConflict: 'date' });
+    if (!error) showToast('💾 Nutrition enregistrée');
+  } else {
+    saveLocal('diet_' + TODAY, data);
+    showToast('💾 Nutrition enregistrée (local)');
+  }
+}
+
+async function loadDiet() {
+  let row = null;
+  if (sb) {
+    const { data } = await sb.from('selfcare_diet').select('*').eq('date', TODAY).single();
+    row = data;
+  } else {
+    row = loadLocal('diet_' + TODAY);
+  }
+  if (!row) return;
+  waterMl = row.water_ml || 0;
+  updateWaterDisplay();
+  ['breakfast','lunch','dinner','snacks'].forEach(m => {
+    if (row[m]) document.getElementById('food-' + m).value = row[m];
+    if (row[m + '_cal']) {
+      document.getElementById('cal-input-' + m).value = row[m + '_cal'];
+      document.getElementById('cal-' + m).textContent = row[m + '_cal'] + ' kcal';
+    }
+  });
+  updateTotalCal();
+}
+
+// ============================================================
+// APPOINTMENTS
+// ============================================================
+let appointments = [];
+
+async function loadAppointments() {
+  if (sb) {
+    // Auto-archive past appointments
+    const { data } = await sb.from('selfcare_appointments')
+      .select('*').order('appointment_date', { ascending: true });
+    appointments = data || [];
+    // Auto-archive past
+    const pastIds = appointments
+      .filter(a => !a.archived && a.appointment_date < TODAY)
+      .map(a => a.id);
+    if (pastIds.length > 0) {
+      await sb.from('selfcare_appointments').update({ archived: true }).in('id', pastIds);
+      appointments.forEach(a => { if (pastIds.includes(a.id)) a.archived = true; });
+    }
+  } else {
+    appointments = loadLocal('appointments') || [];
+    appointments.forEach(a => { if (a.appointment_date < TODAY) a.archived = true; });
+    saveLocal('appointments', appointments);
+  }
+  renderAppointments();
+}
+
+function renderAppointments() {
+  const upcoming = appointments.filter(a => !a.archived);
+  const archived = appointments.filter(a => a.archived);
+
+  const upEl = document.getElementById('upcoming-apts');
+  if (upcoming.length === 0) {
+    upEl.innerHTML = '<div class="empty-state"><div class="empty-icon">📅</div>Aucun rendez-vous à venir</div>';
+  } else {
+    upEl.innerHTML = upcoming.map(a => aptHtml(a)).join('');
+  }
+
+  const arEl = document.getElementById('archived-apts');
+  if (archived.length === 0) {
+    arEl.innerHTML = '<div class="empty-state" style="padding:14px 0"><div class="empty-icon" style="font-size:24px">🗂️</div>Aucun archivé</div>';
+  } else {
+    arEl.innerHTML = archived.map(a => aptHtml(a, true)).join('');
+  }
+}
+
+function aptHtml(a, isArchived = false) {
+  const d = new Date(a.appointment_date + 'T12:00:00');
+  const months = ['Jan','Fév','Mar','Avr','Mai','Jun','Jul','Aoû','Sep','Oct','Nov','Déc'];
+  const day = d.getDate();
+  const month = months[d.getMonth()];
+  const isToday = a.appointment_date === TODAY;
+  const diff = Math.ceil((new Date(a.appointment_date) - new Date(TODAY)) / 86400000);
+  const cls = isToday ? 'apt-today' : diff <= 3 && diff >= 0 ? 'apt-soon' : 'apt-upcoming';
+
+  return `<div class="apt-item ${isArchived ? '' : cls}" style="${isArchived ? 'opacity:0.65' : ''}">
+    <div class="apt-date-block">
+      <div class="apt-day">${day}</div>
+      <div class="apt-month">${month}</div>
+    </div>
+    <div class="apt-info">
+      <div class="apt-name">${a.title}</div>
+      ${a.doctor ? `<div class="apt-doctor">👩‍⚕️ ${a.doctor}</div>` : ''}
+      ${a.appointment_time ? `<div class="apt-time">🕐 ${a.appointment_time.slice(0,5)}</div>` : ''}
+      ${a.location ? `<div class="apt-notes">📍 ${a.location}</div>` : ''}
+      ${a.notes ? `<div class="apt-notes">📝 ${a.notes}</div>` : ''}
+      ${isToday ? '<div style="font-size:11px;color:var(--rose);font-weight:600;margin-top:4px">📌 C\'est aujourd\'hui !</div>' : ''}
+    </div>
+    <div class="apt-actions">
+      ${!isArchived ? `<button class="btn-icon" onclick="editAppointment('${a.id}')" title="Modifier">✏️</button>` : ''}
+      <button class="btn-icon" onclick="deleteAppointment('${a.id}')" title="Supprimer">🗑️</button>
+    </div>
+  </div>`;
+}
+
+function openAptModal(apt = null) {
+  document.getElementById('apt-edit-id').value = '';
+  document.getElementById('apt-title').value = '';
+  document.getElementById('apt-date').value = '';
+  document.getElementById('apt-time').value = '';
+  document.getElementById('apt-doctor').value = '';
+  document.getElementById('apt-location').value = '';
+  document.getElementById('apt-notes').value = '';
+  document.getElementById('apt-modal-title').textContent = 'Nouveau rendez-vous';
+
+  if (apt) {
+    document.getElementById('apt-edit-id').value = apt.id;
+    document.getElementById('apt-title').value = apt.title || '';
+    document.getElementById('apt-date').value = apt.appointment_date || '';
+    document.getElementById('apt-time').value = apt.appointment_time ? apt.appointment_time.slice(0,5) : '';
+    document.getElementById('apt-doctor').value = apt.doctor || '';
+    document.getElementById('apt-location').value = apt.location || '';
+    document.getElementById('apt-notes').value = apt.notes || '';
+    document.getElementById('apt-modal-title').textContent = 'Modifier le rendez-vous';
+  }
+  document.getElementById('apt-modal-overlay').classList.add('open');
+}
+
+function closeAptModal(e) {
+  if (!e || e.target === document.getElementById('apt-modal-overlay')) {
+    document.getElementById('apt-modal-overlay').classList.remove('open');
+  }
+}
+
+function editAppointment(id) {
+  const apt = appointments.find(a => a.id === id);
+  if (apt) openAptModal(apt);
+}
+
+async function deleteAppointment(id) {
+  if (!confirm('Supprimer ce rendez-vous ?')) return;
+  if (sb) {
+    await sb.from('selfcare_appointments').delete().eq('id', id);
+  } else {
+    appointments = appointments.filter(a => a.id !== id);
+    saveLocal('appointments', appointments);
+  }
+  showToast('🗑️ Supprimé');
+  loadAppointments();
+}
+
+async function saveAppointment() {
+  const title = document.getElementById('apt-title').value.trim();
+  const date = document.getElementById('apt-date').value;
+  if (!title || !date) { showToast('⚠️ Titre et date obligatoires'); return; }
+
+  const editId = document.getElementById('apt-edit-id').value;
+  const data = {
+    title,
+    appointment_date: date,
+    appointment_time: document.getElementById('apt-time').value || null,
+    doctor: document.getElementById('apt-doctor').value || null,
+    location: document.getElementById('apt-location').value || null,
+    notes: document.getElementById('apt-notes').value || null,
+    archived: date < TODAY
+  };
+
+  if (sb) {
+    if (editId) {
+      await sb.from('selfcare_appointments').update(data).eq('id', editId);
+    } else {
+      await sb.from('selfcare_appointments').insert(data);
+    }
+  } else {
+    if (editId) {
+      const idx = appointments.findIndex(a => a.id === editId);
+      if (idx >= 0) appointments[idx] = { ...appointments[idx], ...data };
+    } else {
+      appointments.push({ id: Date.now().toString(), ...data });
+    }
+    saveLocal('appointments', appointments);
+  }
+  closeAptModal();
+  showToast('📅 Rendez-vous enregistré !');
+  loadAppointments();
+}
+
+function toggleArchives() {
+  const el = document.getElementById('archived-apts');
+  el.style.display = el.style.display === 'none' ? 'block' : 'none';
+}
+
+// ============================================================
+// OVERVIEW
+// ============================================================
+async function loadOverview() {
+  const days = [];
+  for (let i = 6; i >= 0; i--) days.push(offsetDate(TODAY, -i));
+
+  let sleepRows = [], hygieneRows = [], dietRows = [];
+
+  if (sb) {
+    const [s, h, d] = await Promise.all([
+      sb.from('selfcare_sleep').select('date, hours_slept').in('date', days),
+      sb.from('selfcare_hygiene').select('*').in('date', days),
+      sb.from('selfcare_diet').select('date, water_ml').in('date', days),
+    ]);
+    sleepRows = s.data || [];
+    hygieneRows = h.data || [];
+    dietRows = d.data || [];
+  } else {
+    sleepRows = days.map(d => loadLocal('sleep_' + d)).filter(Boolean);
+    hygieneRows = days.map(d => loadLocal('hygiene_' + d)).filter(Boolean);
+    dietRows = days.map(d => loadLocal('diet_' + d)).filter(Boolean);
+  }
+
+  const sleepByDate = {};
+  sleepRows.forEach(r => sleepByDate[r.date] = r.hours_slept);
+  const hygieneByDate = {};
+  hygieneRows.forEach(r => hygieneByDate[r.date] = r);
+  const dietByDate = {};
+  dietRows.forEach(r => dietByDate[r.date] = r.water_ml);
+
+  // Averages
+  const sleepVals = sleepRows.map(r => r.hours_slept).filter(Boolean);
+  const avgSleep = sleepVals.length ? (sleepVals.reduce((a,b) => a+b, 0) / sleepVals.length).toFixed(1) : '—';
+  document.getElementById('avg-sleep').textContent = avgSleep + (avgSleep !== '—' ? 'h' : '');
+
+  const waterVals = dietRows.map(r => r.water_ml).filter(Boolean);
+  const avgWater = waterVals.length ? Math.round(waterVals.reduce((a,b) => a+b, 0) / waterVals.length) : '—';
+  document.getElementById('avg-water').textContent = avgWater + (avgWater !== '—' ? ' ml' : '');
+
+  const hygieneVals = hygieneRows.map(r => {
+    const keys = ['teeth_am','teeth_pm','skincare_am','skincare_pm','showered','washed_hair','pooped'];
+    return keys.filter(k => r[k]).length;
+  });
+  const avgHygiene = hygieneVals.length ? (hygieneVals.reduce((a,b) => a+b, 0) / hygieneVals.length).toFixed(1) : '—';
+  document.getElementById('avg-hygiene').textContent = avgHygiene + '/7';
+
+  // Poop streak
+  let streak = 0;
+  for (let i = 0; i < days.length; i++) {
+    const d = offsetDate(TODAY, -i);
+    const h = hygieneByDate[d];
+    if (h && h.pooped) streak++;
+    else break;
+  }
+  document.getElementById('poop-streak').textContent = streak;
+
+  // Poop grid
+  const dowLabels = ['L','M','M','J','V','S','D'];
+  const dowMap = {1:'L',2:'M',3:'M',4:'J',5:'V',6:'S',0:'D'};
+  const poopGrid = document.getElementById('poop-grid');
+  poopGrid.innerHTML = days.map(d => {
+    const h = hygieneByDate[d];
+    const isToday = d === TODAY;
+    const hasPoop = h && h.pooped;
+    const noData = !h;
+    const cls = noData ? '' : hasPoop ? 'poop-yes' : 'poop-no';
+    const emoji = noData ? '·' : hasPoop ? '💩' : '✗';
+    return `<div class="day-col">
+      <div class="day-label ${isToday ? 'today-label' : ''}">${dowMap[new Date(d+'T12:00:00').getDay()]}</div>
+      <div class="day-dot ${cls} ${isToday ? 'today-dot' : ''}" style="font-size:${hasPoop?'16px':'12px'}">${emoji}</div>
+      <div style="font-size:9px;color:var(--brown-light)">${d.slice(8)}</div>
+    </div>`;
+  }).join('');
+
+  // 7 day overview labels
+  const labelsEl = document.getElementById('overview-7day-labels');
+  labelsEl.innerHTML = days.map(d => {
+    const isToday = d === TODAY;
+    const sl = sleepByDate[d];
+    const filled = !!sl;
+    return `<div class="day-col">
+      <div class="day-label ${isToday ? 'today-label' : ''}">${dowMap[new Date(d+'T12:00:00').getDay()]}</div>
+      <div class="day-dot ${filled ? 'filled' : ''} ${isToday ? 'today-dot' : ''}" style="font-size:10px">${sl ? sl + 'h' : '—'}</div>
+    </div>`;
+  }).join('');
+}
+
+// ============================================================
+// LOCAL STORAGE FALLBACK
+// ============================================================
+function saveLocal(key, data) {
+  localStorage.setItem('selfcare_' + key, JSON.stringify(data));
+}
+function loadLocal(key) {
+  try {
+    const v = localStorage.getItem('selfcare_' + key);
+    return v ? JSON.parse(v) : null;
+  } catch { return null; }
+}
+
+// ============================================================
+// DATE UTILS
+// ============================================================
+function offsetDate(dateStr, days) {
+  const d = new Date(dateStr + 'T12:00:00');
+  d.setDate(d.getDate() + days);
+  return d.toISOString().split('T')[0];
+}
+
+function formatDateLabel(dateStr) {
+  const d = new Date(dateStr + 'T12:00:00');
+  return d.toLocaleDateString('fr-CH', { weekday: 'short', day: 'numeric', month: 'short' });
+}
+
+// ============================================================
+// INIT
+// ============================================================
+async function init() {
+  initHeader();
+  initSupabase();
+  updateSleepDisplay();
+  await Promise.all([
+    loadSleepHistory(),
+    loadHygiene(),
+    loadDiet(),
+  ]);
+}
+
+init();
+</script>
+</body>
+</html>
