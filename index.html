@@ -647,7 +647,7 @@
               <>
                 <button className="filter-toggle" onClick={() => setShowFilters(v => !v)}>
                   <span style={{fontSize:14}}>{showFilters ? '▲' : '▼'}</span>
-                  Filters{hasFilters ? ` (${filterSteps.length + filterIngredients.length + filterSkinTypes.length})` : ''}
+                  Filters{hasFilters ? ` (${filterSteps.length + filterIngredients.length + filterSkinTypes.length})` : null}
                   {hasFilters && (
                     <span style={{color:'var(--terra)',marginLeft:4}} onClick={e => {
                       e.stopPropagation();
