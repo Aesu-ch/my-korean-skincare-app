@@ -303,6 +303,20 @@
       return r.json();
     }
 
+    async function callChat(messages, products) {
+      const r = await fetch(`${WORKER_URL}/chat`, {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          messages,
+          products: products.map(p => ({ name: p.name, brand: p.brand, step_name: p.step_name, step_id: p.step_id })),
+          catalogue: [],
+        }),
+      });
+      if (!r.ok) throw new Error(`Chat ${r.status}`);
+      const d = await r.json();
+      return d.reply;
+    }
+
     let toastTimer;
     function showToast(msg) {
       let el = document.getElementById('sk-toast');
@@ -355,6 +369,10 @@
       const [addedRecs, setAddedRecs]       = useState({});
       const [addingRoutine, setAddingRoutine] = useState(false);
       const [quizStarted, setQuizStarted]   = useState(false);
+      const [aesuMode, setAesuMode]           = useState('landing'); // 'landing' | 'quiz' | 'chat'
+      const [chatMsgs, setChatMsgs]           = useState([]);
+      const [chatInput2, setChatInput2]       = useState('');
+      const [chatLoading2, setChatLoading2]   = useState(false);
 
       const fileRef = useRef();
       const camRef  = useRef();
@@ -425,7 +443,7 @@
       }
 
       function restartQuiz() {
-        setQuizStarted(false); setQuizHistory([]); setQuizUI([]);
+        setQuizStarted(false); setAesuMode('landing'); setQuizHistory([]); setQuizUI([]);
         setQuizChoices([]); setQuizMultiple(false); setQuizSelected([]); setQuizRecs(null); setAddedRecs({});
       }
 
@@ -475,6 +493,28 @@
           setTab('routines');
         } catch (e) { console.error(e); showToast('Error creating routine'); }
         finally { setAddingRoutine(false); }
+      }
+
+      function startChat() {
+        setAesuMode('chat');
+        setChatMsgs([{ role: 'assistant', content: "Hi! I'm Dear Aesu 🌸 I'm here to help with all your skincare questions — from building a routine, to understanding ingredients, to finding the right products for your skin. What's on your mind?" }]);
+      }
+
+      async function sendChatMessage() {
+        if (!chatInput2.trim() || chatLoading2) return;
+        const userMsg = { role: 'user', content: chatInput2.trim() };
+        const history = [...chatMsgs, userMsg];
+        setChatMsgs(history);
+        setChatInput2('');
+        setChatLoading2(true);
+        try {
+          const reply = await callChat(history, products);
+          setChatMsgs(h => [...h, { role: 'assistant', content: reply }]);
+        } catch {
+          setChatMsgs(h => [...h, { role: 'assistant', content: 'Sorry, something went wrong — please try again! 🙏' }]);
+        } finally {
+          setChatLoading2(false);
+        }
       }
 
       // ── Handle file/camera ────────────────────────────────────────────
@@ -852,32 +892,73 @@
       // RENDER — Dear Aesu quiz
       // ══════════════════════════════════════════════════════════════════
       function renderAesu() {
+        const subtitle = aesuMode === 'chat' ? '● Skincare Advisor' : '● Skin Assessment';
+        const showBack = aesuMode !== 'landing';
         return (
           <div className="quiz-wrap">
             <div className="quiz-hdr">
               <div className="aesu-av">🌸</div>
-              <div>
+              <div style={{flex:1}}>
                 <div className="aesu-nm">Dear Aesu</div>
-                <div className="aesu-st">● Skin Assessment</div>
+                <div className="aesu-st">{subtitle}</div>
               </div>
-              {quizStarted && (
-                <button className="quiz-restart" onClick={restartQuiz}>Restart</button>
+              {showBack && (
+                <button className="quiz-restart" onClick={() => {
+                  setAesuMode('landing');
+                  setQuizStarted(false); setQuizHistory([]); setQuizUI([]);
+                  setQuizChoices([]); setQuizMultiple(false); setQuizSelected([]); setQuizRecs(null); setAddedRecs({});
+                  setChatMsgs([]); setChatInput2('');
+                }}>← Back</button>
               )}
             </div>
 
-            {!quizStarted ? (
-              <div style={{flex:1,display:'flex',flexDirection:'column',alignItems:'center',justifyContent:'center',padding:'32px 28px',textAlign:'center',gap:20}}>
+            {aesuMode === 'landing' ? (
+              <div style={{flex:1,display:'flex',flexDirection:'column',alignItems:'center',justifyContent:'center',padding:'32px 28px',textAlign:'center',gap:16}}>
                 <div style={{fontSize:52}}>🌸</div>
                 <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:24,fontWeight:500,color:'var(--espresso)'}}>
-                  Find your perfect routine
+                  Dear Aesu
                 </div>
-                <div style={{fontSize:13.5,color:'var(--taupe)',lineHeight:1.7,maxWidth:300}}>
-                  I'll ask you a few questions about your skin and recommend the ideal K-beauty routine, personalised just for you.
+                <div style={{fontSize:13.5,color:'var(--taupe)',lineHeight:1.7,maxWidth:300,marginBottom:8}}>
+                  Your personal K-beauty advisor — here to help you glow.
                 </div>
-                <button className="btn-primary" style={{marginTop:8,padding:'12px 32px',fontSize:14}} onClick={startQuiz}>
-                  Start my skin assessment
+                <button className="btn-primary" style={{width:260,justifyContent:'center',padding:'12px 24px',fontSize:14}}
+                  onClick={() => { setAesuMode('quiz'); setQuizStarted(false); startQuiz(); }}>
+                  ✦ Start skin assessment
                 </button>
+                <button className="btn-outline" style={{width:260,justifyContent:'center',padding:'11px 24px',fontSize:14}}
+                  onClick={startChat}>
+                  💬 Get skincare advice
+                </button>
+                <div style={{fontSize:11.5,color:'var(--silver)',marginTop:4,lineHeight:1.6,maxWidth:260}}>
+                  Assessment gives you a full personalised routine.<br/>Advice is a free chat with Aesu about anything skincare.
+                </div>
               </div>
+            ) : aesuMode === 'chat' ? (
+              <>
+                <div className="quiz-msgs">
+                  {chatMsgs.map((m, i) => (
+                    <div key={i} className={`qmsg ${m.role === 'user' ? 'u' : ''}`}>
+                      <div className="qav">{m.role === 'user' ? '🌿' : '🌸'}</div>
+                      <div className="qbubble">{m.content}</div>
+                    </div>
+                  ))}
+                  {chatLoading2 && (
+                    <div className="qmsg">
+                      <div className="qav">🌸</div>
+                      <div className="qbubble"><div className="dots"><span/><span/><span/></div></div>
+                    </div>
+                  )}
+                  <div ref={quizEnd} />
+                </div>
+                <div className="quiz-inp-area">
+                  <textarea className="quiz-inp" value={chatInput2}
+                    onChange={e => setChatInput2(e.target.value)}
+                    onKeyDown={e => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendChatMessage(); } }}
+                    placeholder="Ask Aesu anything about skincare…" rows={1} />
+                  <button className="quiz-send" onClick={sendChatMessage}
+                    disabled={chatLoading2 || !chatInput2.trim()}>↑</button>
+                </div>
+              </>
             ) : (
               <>
                 <div className="quiz-msgs">
