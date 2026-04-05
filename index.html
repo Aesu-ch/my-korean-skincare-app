@@ -178,6 +178,9 @@
     .quiz-choices{padding:0 20px 12px;display:flex;flex-wrap:wrap;gap:8px}
     .q-choice{padding:8px 16px;border-radius:22px;border:1.5px solid var(--terra);background:var(--pearl);font-family:'Nunito',sans-serif;font-size:13px;font-weight:500;color:var(--terra);cursor:pointer;transition:all .2s}
     .q-choice:hover{background:var(--terra);color:var(--pearl)}
+    .q-choice.sel{background:var(--terra);color:var(--pearl)}
+    .q-confirm{margin:8px 20px 0;padding:9px 24px;border-radius:22px;background:var(--espresso);color:var(--pearl);border:none;font-family:'Nunito',sans-serif;font-size:13px;font-weight:600;cursor:pointer;transition:background .2s}
+    .q-confirm:hover{background:var(--mocha)}
 
     .quiz-inp-area{padding:10px 16px 20px;background:var(--pearl);border-top:1px solid var(--cream);display:flex;gap:10px;align-items:flex-end;flex-shrink:0}
     .quiz-inp{flex:1;border:1.5px solid var(--cream);border-radius:20px;padding:10px 16px;font-family:'Nunito',sans-serif;font-size:13.5px;color:var(--espresso);outline:none;resize:none;max-height:80px;background:var(--linen);transition:border-color .2s;line-height:1.45}
@@ -346,6 +349,8 @@
       const [quizLoading, setQuizLoading]   = useState(false);
       const [quizInput, setQuizInput]       = useState('');
       const [quizChoices, setQuizChoices]   = useState([]);
+      const [quizMultiple, setQuizMultiple]   = useState(false);
+      const [quizSelected, setQuizSelected]   = useState([]);
       const [quizRecs, setQuizRecs]         = useState(null);
       const [addedRecs, setAddedRecs]       = useState({});
       const [addingRoutine, setAddingRoutine] = useState(false);
@@ -366,8 +371,8 @@
             setProducts(prods || []);
             if (!rtns || rtns.length === 0) {
               const { data: seeds } = await db.from('routines').insert([
-                { user_id: USER_ID, name: 'AM Routine', emoji: '🌅', product_ids: [] },
-                { user_id: USER_ID, name: 'PM Routine', emoji: '🌙', product_ids: [] },
+                { user_id: USER_ID, name: 'AM Routine', emoji: '🌅', product_ids: [], hidden_steps: [] },
+                { user_id: USER_ID, name: 'PM Routine', emoji: '🌙', product_ids: [], hidden_steps: [] },
               ]).select();
               setRoutines(seeds || []);
             } else {
@@ -390,6 +395,8 @@
           setQuizHistory([...initMsg, { role: 'assistant', content: JSON.stringify(res) }]);
           setQuizUI([{ type: 'bot', text: res.message }]);
           setQuizChoices(res.choices || []);
+          setQuizMultiple(!!res.allow_multiple);
+          setQuizSelected([]);
           if (res.phase === 'recommendation') setQuizRecs(res);
         } catch { setQuizUI([{ type: 'bot', text: 'Sorry, something went wrong. Please try again! 🙏' }]); }
         finally { setQuizLoading(false); }
@@ -402,6 +409,7 @@
         setQuizHistory(newHistory);
         setQuizUI(prev => [...prev, { type: 'user', text: text.trim() }]);
         setQuizChoices([]);
+        setQuizSelected([]);
         setQuizInput('');
         setQuizLoading(true);
         try {
@@ -409,6 +417,8 @@
           setQuizHistory(h => [...h, { role: 'assistant', content: JSON.stringify(res) }]);
           setQuizUI(prev => [...prev, { type: 'bot', text: res.message }]);
           setQuizChoices(res.choices || []);
+          setQuizMultiple(!!res.allow_multiple);
+          setQuizSelected([]);
           if (res.phase === 'recommendation') { setQuizRecs(res); setQuizChoices([]); }
         } catch { setQuizUI(prev => [...prev, { type: 'bot', text: 'Sorry, something went wrong 🙏' }]); }
         finally { setQuizLoading(false); }
@@ -416,7 +426,7 @@
 
       function restartQuiz() {
         setQuizStarted(false); setQuizHistory([]); setQuizUI([]);
-        setQuizChoices([]); setQuizRecs(null); setAddedRecs({});
+        setQuizChoices([]); setQuizMultiple(false); setQuizSelected([]); setQuizRecs(null); setAddedRecs({});
       }
 
       // ── Add recommended product to collection ────────────────────────
@@ -487,7 +497,7 @@
             how_to_use: info.how_to_use || '',
             active_ingredients: Array.isArray(info.active_ingredients) ? info.active_ingredients : [],
             suitable_for: Array.isArray(info.suitable_for) ? info.suitable_for : [],
-            photo: info.photo_url || dataUrl,
+            photo: dataUrl,
           };
           const { data, error } = await db.from('products').insert(row).select().single();
           if (error) throw error;
@@ -515,6 +525,22 @@
         const newIds = (rtn.product_ids || []).filter(id => id !== productId);
         setRoutines(rs => rs.map(r => r.id === routineId ? { ...r, product_ids: newIds } : r));
         await db.from('routines').update({ product_ids: newIds }).eq('id', routineId);
+      }
+
+      async function hideStep(routineId, stepId) {
+        const rtn = routines.find(r => r.id === routineId);
+        if (!rtn) return;
+        const hidden = [...new Set([...(rtn.hidden_steps || []), stepId])];
+        setRoutines(rs => rs.map(r => r.id === routineId ? { ...r, hidden_steps: hidden } : r));
+        await db.from('routines').update({ hidden_steps: hidden }).eq('id', routineId);
+      }
+
+      async function unhideStep(routineId, stepId) {
+        const rtn = routines.find(r => r.id === routineId);
+        if (!rtn) return;
+        const hidden = (rtn.hidden_steps || []).filter(s => s !== stepId);
+        setRoutines(rs => rs.map(r => r.id === routineId ? { ...r, hidden_steps: hidden } : r));
+        await db.from('routines').update({ hidden_steps: hidden }).eq('id', routineId);
       }
 
       async function reorderRoutine(routineId, fromIdx, toIdx) {
@@ -552,12 +578,46 @@
         return (rtn.product_ids || []).map(id => products.find(p => p.id === id)).filter(Boolean);
       }
 
-      const allIngredients = [...new Set(products.flatMap(p => p.active_ingredients || []))].sort();
-      const allSkinTypes   = [...new Set(products.flatMap(p => p.suitable_for || []))].sort();
+      const CURATED_INGREDIENTS = [
+        { label: 'Hyaluronic Acid',         keys: ['hyaluronic','sodium hyaluronate'] },
+        { label: 'Centella Asiatica (CICA)', keys: ['centella','cica','madecassoside','asiaticoside'] },
+        { label: 'Ceramides',               keys: ['ceramide'] },
+        { label: 'Beta-Glucan',             keys: ['beta-glucan','beta glucan'] },
+        { label: 'Snail Mucin',             keys: ['snail','mucin'] },
+        { label: 'Niacinamide',             keys: ['niacinamide'] },
+        { label: 'Tranexamic Acid (TXA)',   keys: ['tranexamic'] },
+        { label: 'Vitamin C',               keys: ['vitamin c','ascorbic','ascorbyl'] },
+        { label: 'Kojic Acid',              keys: ['kojic'] },
+        { label: 'Peptides',                keys: ['peptide'] },
+        { label: 'Retinol / Retinal',       keys: ['retinol','retinal','retinoid'] },
+        { label: 'Bakuchiol',               keys: ['bakuchiol'] },
+        { label: 'Glycolic Acid (AHA)',     keys: ['glycolic'] },
+        { label: 'Lactic Acid (AHA)',       keys: ['lactic'] },
+        { label: 'Salicylic Acid (BHA)',    keys: ['salicylic','bha'] },
+        { label: 'Gluconolactone (PHA)',    keys: ['gluconolactone','pha'] },
+        { label: 'Panthenol',               keys: ['panthenol','pro-vitamin b5'] },
+        { label: 'Allantoin',               keys: ['allantoin'] },
+        { label: 'Green Tea',               keys: ['green tea','camellia sinensis','egcg'] },
+        { label: 'Mugwort',                 keys: ['mugwort','artemisia'] },
+        { label: 'Tea Tree',                keys: ['tea tree','melaleuca'] },
+        { label: 'Propolis',                keys: ['propolis'] },
+        { label: 'Heartleaf',               keys: ['heartleaf','houttuynia'] },
+      ];
+      // Only show ingredient filters that match at least one product in the collection
+      const activeIngredients = CURATED_INGREDIENTS.filter(ci =>
+        products.some(p => (p.active_ingredients || []).some(ing =>
+          ci.keys.some(k => ing.toLowerCase().includes(k))
+        ))
+      );
+      const allSkinTypes = [...new Set(products.flatMap(p => p.suitable_for || []))].sort();
 
       const filteredProducts = products.filter(p => {
         if (filterSteps.length && !filterSteps.includes(p.step_id)) return false;
-        if (filterIngredients.length && !filterIngredients.some(i => (p.active_ingredients || []).includes(i))) return false;
+        if (filterIngredients.length && !filterIngredients.some(label => {
+          const ci = CURATED_INGREDIENTS.find(c => c.label === label);
+          if (!ci) return false;
+          return (p.active_ingredients || []).some(ing => ci.keys.some(k => ing.toLowerCase().includes(k)));
+        })) return false;
         if (filterSkinTypes.length && !filterSkinTypes.some(s => (p.suitable_for || []).includes(s))) return false;
         return true;
       });
@@ -587,7 +647,7 @@
               <>
                 <button className="filter-toggle" onClick={() => setShowFilters(v => !v)}>
                   <span style={{fontSize:14}}>{showFilters ? '▲' : '▼'}</span>
-                  Filter{hasFilters ? ` (${filterSteps.length + filterIngredients.length + filterSkinTypes.length})` : ''}
+                  Filters{hasFilters ? ` (${filterSteps.length + filterIngredients.length + filterSkinTypes.length})` : ''}
                   {hasFilters && (
                     <span style={{color:'var(--terra)',marginLeft:4}} onClick={e => {
                       e.stopPropagation();
@@ -609,19 +669,6 @@
                         ))}
                       </div>
                     </div>
-                    {allIngredients.length > 0 && (
-                      <div className="filter-section">
-                        <span className="filter-label">By Active Ingredient</span>
-                        <div className="filter-wrap">
-                          {allIngredients.map(ing => (
-                            <button key={ing} className={`filter-chip ${filterIngredients.includes(ing) ? 'on' : ''}`}
-                              onClick={() => toggleArr(filterIngredients, setFilterIngredients, ing)}>
-                              {ing}
-                            </button>
-                          ))}
-                        </div>
-                      </div>
-                    )}
                     {allSkinTypes.length > 0 && (
                       <div className="filter-section">
                         <span className="filter-label">By Skin Type</span>
@@ -630,6 +677,19 @@
                             <button key={st} className={`filter-chip ${filterSkinTypes.includes(st) ? 'on' : ''}`}
                               onClick={() => toggleArr(filterSkinTypes, setFilterSkinTypes, st)}>
                               {st}
+                            </button>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+                    {activeIngredients.length > 0 && (
+                      <div className="filter-section">
+                        <span className="filter-label">By Active Ingredient</span>
+                        <div className="filter-wrap">
+                          {activeIngredients.map(ci => (
+                            <button key={ci.label} className={`filter-chip ${filterIngredients.includes(ci.label) ? 'on' : ''}`}
+                              onClick={() => toggleArr(filterIngredients, setFilterIngredients, ci.label)}>
+                              {ci.label}
                             </button>
                           ))}
                         </div>
@@ -693,7 +753,18 @@
                   <button className="back-btn" onClick={() => setSelRoutine(null)}>←</button>
                   <h2 className="sec-title">{rtn.emoji} {rtn.name}</h2>
                 </div>
-                <button className="btn-outline" onClick={() => setAddToRtnProd({ _rtnId: rtn.id })}>＋ Step</button>
+                <div style={{display:'flex',gap:8,alignItems:'center'}}>
+                  {(rtn.hidden_steps||[]).length > 0 && (
+                    <button className="btn-ghost" style={{fontSize:12,color:'var(--stone)',fontWeight:600}}
+                      title="Restore hidden steps"
+                      onClick={() => {
+                        (rtn.hidden_steps||[]).forEach(sid => unhideStep(rtn.id, sid));
+                      }}>
+                      Show all
+                    </button>
+                  )}
+                  <button className="btn-outline" onClick={() => setAddToRtnProd({ _rtnId: rtn.id })}>＋ Step</button>
+                </div>
               </div>
 
               {STEPS.map(step => {
@@ -730,6 +801,8 @@
                     </div>
                   );
                 } else {
+                  const isHidden = (rtn.hidden_steps || []).includes(step.id);
+                  if (isHidden) return null;
                   return (
                     <div key={step.id} className="step-ghost">
                       <div className="step-num-label">
@@ -741,6 +814,9 @@
                         <span style={{fontSize:16}}>{step.emoji}</span>
                         Add {step.name}
                       </button>
+                      <button className="btn-ghost" title="Hide this step"
+                        onClick={() => hideStep(rtn.id, step.id)}
+                        style={{fontSize:14,color:'var(--silver)',flexShrink:0}}>✕</button>
                     </div>
                   );
                 }
@@ -822,10 +898,34 @@
 
                 {/* Choices */}
                 {!quizLoading && quizChoices.length > 0 && !quizRecs && (
-                  <div className="quiz-choices">
-                    {quizChoices.map((c, i) => (
-                      <button key={i} className="q-choice" onClick={() => sendQuizMessage(c)}>{c}</button>
-                    ))}
+                  <div>
+                    <div className="quiz-choices">
+                      {quizChoices.map((c, i) => {
+                        const isSel = quizSelected.includes(c);
+                        return (
+                          <button key={i}
+                            className={`q-choice ${isSel ? 'sel' : ''}`}
+                            onClick={() => {
+                              if (!quizMultiple) {
+                                sendQuizMessage(c);
+                              } else {
+                                setQuizSelected(prev =>
+                                  prev.includes(c) ? prev.filter(v => v !== c) : [...prev, c]
+                                );
+                              }
+                            }}>
+                            {quizMultiple && <span style={{marginRight:5}}>{isSel ? '✓' : '+'}</span>}
+                            {c}
+                          </button>
+                        );
+                      })}
+                    </div>
+                    {quizMultiple && quizSelected.length > 0 && (
+                      <button className="q-confirm"
+                        onClick={() => sendQuizMessage(quizSelected.join(', '))}>
+                        Confirm ({quizSelected.length} selected) →
+                      </button>
+                    )}
                   </div>
                 )}
 
